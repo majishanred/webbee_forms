@@ -3,8 +3,10 @@ import { useContactsForm } from '../../../hooks/useContactsForm.ts';
 import { Controller } from 'react-hook-form';
 import { FormControl, FormHelperText, TextField } from '@mui/material';
 import { changeContactsField, useInfoStore } from '../../../stores/InfoStore.tsx';
+import { useContactsErrors } from '../../../hooks/useContactsErrors.ts';
+import { ContactsFormFieldProps } from '../ContactsForm.types.ts';
 
-const LastNameField = () => {
+const LastNameField = ({ disabled }: ContactsFormFieldProps) => {
   const lastName = useInfoStore((state) => state.contactsInfo.lastName);
   const changeLastName = changeContactsField;
   const { control, setValue } = useContactsForm();
@@ -12,6 +14,8 @@ const LastNameField = () => {
   useEffect(() => {
     setValue('lastName', lastName);
   }, [lastName]);
+
+  useContactsErrors('lastName');
 
   return (
     <Controller
@@ -26,6 +30,7 @@ const LastNameField = () => {
             onChange={(e) => changeLastName('lastName', e.target.value)}
             error={Boolean(error)}
             required
+            disabled={disabled}
           />
           <FormHelperText error>{error?.message ?? ''}</FormHelperText>
         </FormControl>

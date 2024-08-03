@@ -2,39 +2,76 @@ import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 import { ContactsInfo } from '../types/Contacts.ts';
 import { ProjectInfo } from '../types/Project.ts';
+import { contactsSchema } from '../schemas/ContactsSchema.ts';
+import { projectSchema } from '../schemas/ProjectSchema.ts';
+import { ZodError } from 'zod';
 
 type Errors = {
-  [fieldName: string]: {
-    error: any;
+  [fieldName: any]: {
+    messages: string[];
   };
 };
-type Project = ProjectInfo & { id: number; projectNumber: number; errors?: {} };
+type Project = ProjectInfo & { id: number; projectNumber: number; isValidated: boolean; errors?: Errors };
 
 type InfoStoreType = {
-  contactsInfo: ContactsInfo;
+  contactsInfo: ContactsInfo & { isValidated: boolean; errors?: Errors };
   projectsIds: number[];
   projects: {
-    [id: number]: Project;
+    [id: number]: Project | null;
   };
+  errorEmittersId: number[];
+  isEverythingValidated: boolean;
 };
-
-type Actions = {};
 
 type ContactsKeys = keyof ContactsInfo;
 type ProjectKeys = keyof ProjectInfo;
 
-export const useInfoStore = create<InfoStoreType & Actions>()(
+export const useInfoStore = create<InfoStoreType>()(
   immer((set) => ({
     contactsInfo: {
       firstName: '',
       lastName: '',
       phoneNumber: '',
       luboiDvij: true,
+      isValidated: false,
     },
     projectsIds: [],
     projects: {},
+    errorEmittersId: [],
+
+    isEverythingValidated: false,
   })),
 );
+
+export const validateAll = () =>
+  useInfoStore.setState((state) => {
+    try {
+      contactsSchema.parse(state.contactsInfo);
+      state.contactsInfo.errors = undefined;
+      state.contactsInfo.isValidated = true;
+    } catch (error: unknown) {
+      if (error instanceof ZodError) {
+        state.contactsInfo.errors = error.formErrors.fieldErrors;
+        state.contactsInfo.isValidated = false;
+      }
+    }
+
+    state.projectsIds.forEach((element) => {
+      try {
+        projectSchema.parse(state.projects[element]);
+        state.errorEmittersId = state.errorEmittersId.filter((projectId) => projectId != element);
+        state.projects[element]!.isValidated = true;
+      } catch (error) {
+        if (error instanceof ZodError) {
+          state.projects[element]!.errors = error.formErrors.fieldErrors;
+          state.projects[element]!.isValidated = false;
+          state.errorEmittersId.push(element);
+        }
+      }
+    });
+
+    state.isEverythingValidated = !state.contactsInfo.errors && !state.errorEmittersId.length;
+  });
 
 export const changeContactsField = (fieldName: ContactsKeys, value: string) =>
   useInfoStore.setState((state) => {
@@ -55,7 +92,46 @@ export const addProject = () =>
       role: '',
       beginDate: '',
       projectNumber: state.projectsIds.length + 1,
+      isValidated: false,
     };
     state.projectsIds.push(newProject.id);
     state.projects[newProject.id] = newProject;
+  });
+
+export const deleteProject = (projectId: number) =>
+  useInfoStore.setState((state) => {
+    state.projects[projectId] = null;
+    state.projectsIds = state.projectsIds.filter((id) => id !== projectId);
+    state.errorEmittersId = state.errorEmittersId.filter((elem) => elem != projectId);
+  });
+
+export const invalidateEverything = () =>
+  useInfoStore.setState((state) => {
+    state.isEverythingValidated = false;
+    state.contactsInfo.isValidated = false;
+    state.projectsIds.forEach((projectId) => {
+      state.projects[projectId].isValidated = false;
+    });
+  });
+
+export const validateProject = (projectId: number) =>
+  useInfoStore.setState((state) => {
+    try {
+      projectSchema.parse(state.projects[projectId]);
+
+      state.errorEmittersId = state.errorEmittersId.filter((element) => element != projectId);
+      state.projects[projectId].errors = undefined;
+      state.projects[projectId].isValidated = true;
+    } catch (error) {
+      if (error instanceof ZodError) {
+        state.projects[projectId].errors = error.formErrors.fieldErrors;
+        state.errorEmittersId.push(projectId);
+        state.projects[projectId].isValidated = false;
+      }
+    }
+  });
+
+export const invalidateProject = (projectId: number) =>
+  useInfoStore.setState((state) => {
+    state.projects[projectId]!.isValidated = false;
   });

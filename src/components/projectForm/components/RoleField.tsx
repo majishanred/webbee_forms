@@ -3,15 +3,19 @@ import { useProjectForm } from '../../../hooks/useProjectForm.ts';
 import { useEffect } from 'react';
 import { Controller } from 'react-hook-form';
 import { FormControl, FormHelperText, InputLabel, MenuItem, Select, Typography } from '@mui/material';
+import { useProjectErrors } from '../../../hooks/useProjectErrors.ts';
+import { ProjectFormFieldProps } from '../ProjectForm.types.ts';
 
-const RoleField = ({ projectId }: { projectId: number }) => {
-  const role = useInfoStore((state) => state.projects[projectId].role);
+const RoleField = ({ projectId, disabled }: ProjectFormFieldProps) => {
+  const role = useInfoStore((state) => state.projects[projectId]!.role);
   const changeRole = changeProjectField;
   const { control, setValue } = useProjectForm();
 
   useEffect(() => {
     setValue('role', role);
   }, [role]);
+
+  useProjectErrors(projectId, 'role');
 
   return (
     <Controller
@@ -25,6 +29,7 @@ const RoleField = ({ projectId }: { projectId: number }) => {
             value={role}
             onChange={(event) => changeRole(projectId, 'role', event.target.value)}
             required
+            disabled={disabled}
           >
             {roles.map((role, index) => (
               <MenuItem key={index} value={role}>

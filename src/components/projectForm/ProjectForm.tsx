@@ -10,11 +10,13 @@ import RoleField from './components/RoleField.tsx';
 import BeginDateField from './components/BeginDateField.tsx';
 import EndingDateField from './components/EndingDateField.tsx';
 import StyledForm from '../../styled/StyledForm.tsx';
-import { useInfoStore } from '../../stores/InfoStore.tsx';
+import { deleteProject, invalidateProject, useInfoStore, validateProject } from '../../stores/InfoStore.tsx';
 import { StyledFormTitle } from '../../styled/StyledFormTitle.ts';
 
 const ProjectForm = ({ projectId }: { projectId: number }) => {
-  const projectNumber = useInfoStore((state) => state.projects[projectId].projectNumber);
+  const projectNumber = useInfoStore((state) => state.projects[projectId]!.projectNumber);
+  const isValidated = useInfoStore((state) => state.projects[projectId]!.isValidated);
+
   const methods = useForm<ProjectInfo>({
     resolver: zodResolver(projectSchema),
     defaultValues: {
@@ -25,33 +27,46 @@ const ProjectForm = ({ projectId }: { projectId: number }) => {
     },
   });
 
-  const onSubmit = (data: ProjectInfo) => {
-    console.log('Cool');
-  };
-
   return (
     <FormProvider {...methods}>
-      <StyledForm noValidate onSubmit={methods.handleSubmit(onSubmit, () => {})}>
+      <StyledForm noValidate>
         <Stack gap={2}>
           <Box display="flex" justifyContent="space-between" alignItems="center">
             <StyledFormTitle paddingTop="8px">Проект №{projectNumber}</StyledFormTitle>
-            <Delete onClick={() => console.log('Удаляю нахуй')} />
+            <Delete onClick={() => deleteProject(projectId)} />
           </Box>
-          <NameField projectId={projectId} />
-          <SkillsField projectId={projectId} />
-          <RoleField projectId={projectId} />
+          <NameField projectId={projectId} disabled={isValidated} />
+          <SkillsField projectId={projectId} disabled={isValidated} />
+          <RoleField projectId={projectId} disabled={isValidated} />
           <Box display="flex" gap={1}>
-            <BeginDateField projectId={projectId} />
-            <EndingDateField projectId={projectId} />
+            <BeginDateField projectId={projectId} disabled={isValidated} />
+            <EndingDateField projectId={projectId} disabled={isValidated} />
           </Box>
         </Stack>
         <Stack marginTop={2}>
-          <Button variant="contained" type="submit" sx={{ marginLeft: 'auto' }}>
-            <Typography textTransform="uppercase">добавить</Typography>
-          </Button>
+          <ButtonWrapper projectId={projectId} />
         </Stack>
       </StyledForm>
     </FormProvider>
+  );
+};
+
+const ButtonWrapper = ({ projectId }: { projectId: number }) => {
+  const result = useInfoStore((state) => state.projects[projectId]!.isValidated);
+
+  return (
+    <>
+      {!result && (
+        <Button variant="contained" sx={{ marginLeft: 'auto' }} onClick={() => validateProject(projectId)}>
+          сохранить
+        </Button>
+      )}
+      {result && (
+        <Button variant="contained" sx={{ marginLeft: 'auto' }} onClick={() => invalidateProject(projectId)}>
+          редактировать
+        </Button>
+      )}
+    </>
   );
 };
 

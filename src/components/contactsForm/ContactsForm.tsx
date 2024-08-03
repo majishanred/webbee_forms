@@ -1,7 +1,7 @@
 import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { contactsSchema } from '../../schemas/ContactsSchema.ts';
-import { Box, Button, Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 import { ContactsInfo } from '../../types/Contacts.ts';
 import FirstNameField from './components/FirstNameField.tsx';
 import LastNameField from './components/LastNameField.tsx';
@@ -11,6 +11,7 @@ import PhoneField from './components/PhoneField.tsx';
 import LuboiDvij from './components/LuboiDvij.tsx';
 import StyledForm from '../../styled/StyledForm.tsx';
 import { StyledFormTitle } from '../../styled/StyledFormTitle.ts';
+import { useInfoStore } from '../../stores/InfoStore.tsx';
 
 const ContactsForm = () => {
   const methods = useForm<ContactsInfo>({
@@ -23,21 +24,19 @@ const ContactsForm = () => {
     },
   });
 
-  const onSubmit = (data: ContactsInfo) => {
-    console.log('Cool');
-  };
+  const isValidated = useInfoStore((state) => state.isEverythingValidated);
 
   return (
     <FormProvider {...methods}>
-      <StyledForm noValidate onSubmit={methods.handleSubmit(onSubmit, () => {})}>
+      <StyledForm noValidate>
         <Stack gap={2}>
           <Box>
             <StyledFormTitle>Общая информация</StyledFormTitle>
           </Box>
           <Box display="flex" gap={1}>
-            <LastNameField />
-            <FirstNameField />
-            <MiddleNameField />
+            <LastNameField disabled={isValidated} />
+            <FirstNameField disabled={isValidated} />
+            <MiddleNameField disabled={isValidated} />
           </Box>
         </Stack>
         <Stack gap={2} marginTop={2}>
@@ -45,8 +44,8 @@ const ContactsForm = () => {
             <StyledFormTitle>Контакты</StyledFormTitle>
           </Box>
           <Box display="flex" gap={1}>
-            <PhoneField />
-            <EmailField />
+            <PhoneField disabled={isValidated} />
+            <EmailField disabled={isValidated} />
           </Box>
           <Stack gap={2}>
             <Typography>Другое</Typography>

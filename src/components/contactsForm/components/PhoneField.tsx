@@ -5,8 +5,10 @@ import { FormControl, FormHelperText, TextField } from '@mui/material';
 import { changeContactsField, useInfoStore } from '../../../stores/InfoStore.tsx';
 import { IMaskMixin } from 'react-imask';
 import { InputMaskElement } from 'imask';
+import { useContactsErrors } from '../../../hooks/useContactsErrors.ts';
+import { ContactsFormFieldProps } from '../ContactsForm.types.ts';
 
-export const PhoneField = () => {
+export const PhoneField = ({ disabled }: ContactsFormFieldProps) => {
   const phone = useInfoStore((state) => state.contactsInfo.phoneNumber);
   const changePhone = changeContactsField;
 
@@ -17,6 +19,8 @@ export const PhoneField = () => {
   useEffect(() => {
     setValue('phoneNumber', phone);
   }, [phone]);
+
+  useContactsErrors('phoneNumber');
 
   return (
     <Controller
@@ -33,6 +37,7 @@ export const PhoneField = () => {
             required
             mask={'+{7}(000)000-00-00'}
             onAccept={(value, mask) => changePhone('phoneNumber', mask.unmaskedValue)}
+            disabled={disabled}
           />
           <FormHelperText error>{error?.message ?? ''}</FormHelperText>
         </FormControl>

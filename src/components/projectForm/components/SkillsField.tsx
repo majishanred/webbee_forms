@@ -3,17 +3,19 @@ import { useProjectForm } from '../../../hooks/useProjectForm.ts';
 import { useEffect } from 'react';
 import { Controller } from 'react-hook-form';
 import { Box, Chip, FormControl, FormHelperText, InputLabel, MenuItem, Select, Typography } from '@mui/material';
+import { useProjectErrors } from '../../../hooks/useProjectErrors.ts';
+import { ProjectFormFieldProps } from '../ProjectForm.types.ts';
 
-const SkillsField = ({ projectId }: { projectId: number }) => {
-  const skills = useInfoStore((state) => state.projects[projectId].skills);
+const SkillsField = ({ projectId, disabled }: ProjectFormFieldProps) => {
+  const skills = useInfoStore((state) => state.projects[projectId]!.skills);
   const changeSkills = changeProjectField;
-  const { control, setValue, setError } = useProjectForm();
+  const { control, setValue } = useProjectForm();
 
   useEffect(() => {
     setValue('skills', skills);
   }, [skills]);
 
-  useEffect(() => {}, []);
+  useProjectErrors(projectId, 'skills');
 
   return (
     <Controller
@@ -31,12 +33,11 @@ const SkillsField = ({ projectId }: { projectId: number }) => {
             label="Навыки"
             renderValue={(values) => (
               <Box display="flex" gap={1} flexWrap="wrap">
-                {values.map((element, index) => (
-                  <Chip label={element} key={index} />
-                ))}
+                {values?.map((element, index) => <Chip label={element} key={index} />)}
               </Box>
             )}
             required
+            disabled={disabled}
           >
             {sklls.map((skill, index) => (
               <MenuItem key={index} value={skill}>

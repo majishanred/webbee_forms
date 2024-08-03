@@ -4,6 +4,7 @@ import ContactsTab from './ContactsTab.tsx';
 import ContactsForm from './contactsForm/ContactsForm.tsx';
 import ProjectsTab from './ProjectsTab.tsx';
 import ProjectsFeed from './ProjectsFeed.tsx';
+import { useInfoStore, validateAll, invalidateEverything } from '../stores/InfoStore.tsx';
 
 const Card = () => {
   const [selectedTab, setSelectedTab] = useState<string>('contacts');
@@ -18,11 +19,28 @@ const Card = () => {
       </Stack>
       <StyledSection>{tabs[selectedTab].component}</StyledSection>
       <StyledSection>
-        <Button variant="contained" sx={{ marginLeft: 'auto' }}>
-          сохранить
-        </Button>
+        <SaveButtonWrapper />
       </StyledSection>
     </StyledContainer>
+  );
+};
+
+const SaveButtonWrapper = () => {
+  const result = useInfoStore((state) => state.isEverythingValidated);
+
+  return (
+    <>
+      {!result && (
+        <Button variant="contained" sx={{ marginLeft: 'auto' }} onClick={() => validateAll()}>
+          сохранить
+        </Button>
+      )}
+      {result && (
+        <Button variant="contained" sx={{ marginLeft: 'auto' }} onClick={() => invalidateEverything()}>
+          редактировать
+        </Button>
+      )}
+    </>
   );
 };
 

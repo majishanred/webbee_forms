@@ -1,15 +1,21 @@
 import { addProject, useInfoStore } from '../stores/InfoStore.tsx';
 import ProjectForm from './projectForm/ProjectForm.tsx';
 import { Box, Button, styled } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
 
 const ProjectsFeed = () => {
   const projectsIds = useInfoStore((state) => state.projectsIds);
+
+  const isValidated = useInfoStore((state) => state.isEverythingValidated);
+
   return (
     <StyledContainer>
       {projectsIds.map((projectId) => (
         <ProjectForm projectId={projectId} key={projectId} />
       ))}
-      <Button onClick={addProject}>+</Button>
+      <Button onClick={addProject} disabled={isValidated}>
+        <AddIcon sx={{ width: 64, height: 64 }} />
+      </Button>
     </StyledContainer>
   );
 };

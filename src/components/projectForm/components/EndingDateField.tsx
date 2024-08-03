@@ -5,9 +5,11 @@ import { Controller } from 'react-hook-form';
 import { FormControl, FormHelperText } from '@mui/material';
 import { DateField } from '@mui/x-date-pickers';
 import * as dayjs from 'dayjs';
+import { useProjectErrors } from '../../../hooks/useProjectErrors.ts';
+import { ProjectFormFieldProps } from '../ProjectForm.types.ts';
 
-const EndingDateField = ({ projectId }: { projectId: number }) => {
-  const endingDate = useInfoStore((state) => state.projects[projectId].beginDate);
+const EndingDateField = ({ projectId, disabled }: ProjectFormFieldProps) => {
+  const endingDate = useInfoStore((state) => state.projects[projectId]!.beginDate);
   const changeEndingDate = changeProjectField;
   const { control, setValue } = useProjectForm();
 
@@ -25,13 +27,15 @@ const EndingDateField = ({ projectId }: { projectId: number }) => {
     setValue('endDate', endingDate);
   }, [endingDate]);
 
+  useProjectErrors(projectId, 'endDate');
+
   return (
     <Controller
       name="endDate"
       control={control}
       render={({ fieldState: { error } }) => (
         <FormControl fullWidth>
-          <DateField label="Завершение работы" format="DD.MM.YYYY" onChange={onDateChanges} />
+          <DateField label="Завершение работы" format="DD.MM.YYYY" onChange={onDateChanges} disabled={disabled} />
           <FormHelperText error>{error?.message ?? ''}</FormHelperText>
         </FormControl>
       )}
