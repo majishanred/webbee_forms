@@ -2,7 +2,7 @@ import { z } from 'zod';
 export const projectSchema = z
   .object({
     name: z.string().trim().min(1, 'Обязательное поле'),
-    skills: z.string().array().nonempty('Укажите хотя бы один навык, плз'),
+    skills: z.string().array().nonempty('Укажи хотя бы один навык плз'),
     role: z.string(),
     beginDate: z.string().date(),
     endDate: z.string().date().optional(),

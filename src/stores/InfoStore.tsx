@@ -1,114 +1,61 @@
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
-import { ContactsType } from '../types/Contacts.ts';
-import { Project } from '../types/Project.ts';
-import { BaseSyntheticEvent } from 'react';
+import { ContactsInfo } from '../types/Contacts.ts';
+import { ProjectInfo } from '../types/Project.ts';
 
-const contactsDefaultValue: ContactsType = {
-  contactsInfo: {
-    firstName: '',
-    lastName: '',
-    phoneNumber: '',
-    luboiDvij: true,
-  },
-  changing: true,
-  hasError: null,
+type Errors = {
+  [fieldName: string]: {
+    error: any;
+  };
 };
+type Project = ProjectInfo & { id: number; projectNumber: number; errors?: {} };
 
-type InfoStore = {
-  contactsInfo: ContactsType;
-  projectsInfo: {
-    projects: Project[];
-    projectsLength: number;
-    submitHandlers: ((e?: BaseSyntheticEvent) => Promise<void>)[];
-    errorEmittersIds: number[];
+type InfoStoreType = {
+  contactsInfo: ContactsInfo;
+  projectsIds: number[];
+  projects: {
+    [id: number]: Project;
   };
 };
 
-type Actions = {
-  changeContactsInfo: (contacts: ContactsType) => void;
-  addProject: () => void;
-  changeProject: (project: Project) => void;
-  deleteProject: (project: Project) => void;
-  validateAll: () => void;
-  addSubmitHandler: (handler: (e?: BaseSyntheticEvent) => Promise<void>) => void;
-  addErrorEmitter: (emitterId: number) => void;
-  removeErrorEmitter: (emitterId: number) => void;
-};
+type Actions = {};
 
-const defaultProject: Project = {
-  id: 0,
-  projectNumber: 0,
-  projectInfo: {
-    name: '',
-    skills: [],
-    role: '',
-    beginDate: '',
-    endDate: undefined,
-  },
-  changing: true,
-  error: null,
-};
+type ContactsKeys = keyof ContactsInfo;
+type ProjectKeys = keyof ProjectInfo;
 
-export const useInfoStore = create<InfoStore & Actions>()(
+export const useInfoStore = create<InfoStoreType & Actions>()(
   immer((set) => ({
-    contactsInfo: contactsDefaultValue,
-    projectsInfo: {
-      projects: [],
-      projectsLength: 0,
-      errors: [],
-      submitHandlers: [],
-      errorEmittersIds: [],
+    contactsInfo: {
+      firstName: '',
+      lastName: '',
+      phoneNumber: '',
+      luboiDvij: true,
     },
-    changeContactsInfo: (contacts: ContactsType) => {
-      set((state) => {
-        state.contactsInfo = contacts;
-      });
-    },
-    addProject: () => {
-      set((state) => {
-        state.projectsInfo.projectsLength += 1;
-        state.projectsInfo.projects.push({
-          ...defaultProject,
-          projectNumber: state.projectsInfo.projectsLength,
-          id: Date.now(),
-        });
-      });
-    },
-    changeProject: (project: Project) => {
-      set((state) => {
-        const projIndex = state.projectsInfo.projects.findIndex((item) => item.id === project.id);
-        state.projectsInfo.projects[projIndex] = project;
-      });
-    },
-    deleteProject: (project: Project) => {
-      set((state) => {
-        state.projectsInfo.projects = state.projectsInfo.projects.filter((item) => item.id !== project.id);
-      });
-    },
-    validateAll: () => {
-      set((state) =>
-        state.projectsInfo.submitHandlers.forEach((submitHandler) => {
-          submitHandler();
-        }),
-      );
-    },
-    addSubmitHandler: (handler) => {
-      set((state) => {
-        state.projectsInfo.submitHandlers.push(handler);
-      });
-    },
-    addErrorEmitter: (error) => {
-      set((state) => {
-        !state.projectsInfo.errorEmittersIds.includes(error) && state.projectsInfo.errorEmittersIds.push(error);
-      });
-    },
-    removeErrorEmitter: (id: number) => {
-      set((state) => {
-        state.projectsInfo.errorEmittersIds = state.projectsInfo.errorEmittersIds.filter(
-          (emitterId) => emitterId !== id,
-        );
-      });
-    },
+    projectsIds: [],
+    projects: {},
   })),
 );
+
+export const changeContactsField = (fieldName: ContactsKeys, value: string) =>
+  useInfoStore.setState((state) => {
+    state.contactsInfo[fieldName] = value;
+  });
+
+export const changeProjectField = (projectId: number, fieldName: ProjectKeys, value: string | string[]) =>
+  useInfoStore.setState((state) => {
+    state.projects[projectId][fieldName] = value;
+  });
+
+export const addProject = () =>
+  useInfoStore.setState((state) => {
+    const newProject: Project = {
+      id: Date.now(),
+      name: '',
+      skills: [],
+      role: '',
+      beginDate: '',
+      projectNumber: state.projectsIds.length + 1,
+    };
+    state.projectsIds.push(newProject.id);
+    state.projects[newProject.id] = newProject;
+  });
