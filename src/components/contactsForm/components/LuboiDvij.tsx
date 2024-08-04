@@ -28,8 +28,8 @@ const LuboiDvij = ({ disabled }: ContactsFormFieldProps) => {
             label="За любой движ"
             checked={luboiDvij}
             onChange={(event) => {
-              // @Note: я пока не очень понимаю как это нормально типизировать, возможно надо изменить декларацию модуля, но она тоже ругается
-              changeContactsField('luboiDvij', event.target.checked);
+              const target = event.target as HTMLInputElement;
+              changeContactsField('luboiDvij', target.checked);
             }}
             disabled={disabled}
           />

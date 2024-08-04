@@ -27,7 +27,7 @@ const SkillsField = ({ projectId, disabled }: ProjectFormFieldProps) => {
           <Select
             value={skills}
             onChange={(event) => {
-              const targetValue = event.target.value;
+              const targetValue = event.target.value as string;
               if (skills.includes(targetValue)) {
                 changeProjectField(
                   projectId,
@@ -36,7 +36,7 @@ const SkillsField = ({ projectId, disabled }: ProjectFormFieldProps) => {
                 );
                 return;
               }
-              changeProjectField(projectId, 'skills', [...skills, event.target.value]);
+              changeProjectField(projectId, 'skills', [...skills, targetValue]);
             }}
             ref={ref}
             label="Навыки"

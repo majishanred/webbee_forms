@@ -51,7 +51,7 @@ export const validateAll = () =>
       state.contactsInfo.isValidated = true;
     } catch (error: unknown) {
       if (error instanceof ZodError) {
-        state.contactsInfo.errors = error.formErrors.fieldErrors;
+        state.contactsInfo.errors = error.formErrors.fieldErrors as Errors;
         state.contactsInfo.isValidated = false;
       }
     }
@@ -65,7 +65,7 @@ export const validateAll = () =>
         state.projects[element]!.isValidated = true;
       } catch (error) {
         if (error instanceof ZodError) {
-          state.projects[element].errors = error.formErrors.fieldErrors;
+          state.projects[element].errors = error.formErrors.fieldErrors as Errors;
           state.projects[element].isValidated = false;
           state.errorEmittersId.push(element);
         }
@@ -129,7 +129,7 @@ export const validateProject = (projectId: number) =>
       state.projects[projectId].isValidated = true;
     } catch (error) {
       if (error instanceof ZodError) {
-        state.projects[projectId].errors = error.formErrors.fieldErrors;
+        state.projects[projectId].errors = error.formErrors.fieldErrors as Errors;
         state.errorEmittersId.push(projectId);
         state.projects[projectId].isValidated = false;
       }
