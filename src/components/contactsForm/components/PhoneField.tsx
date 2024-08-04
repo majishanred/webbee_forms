@@ -8,7 +8,7 @@ import { InputMaskElement, MaskElement } from 'imask';
 import { useContactsErrors } from '../../../hooks/useContactsErrors.ts';
 import { ContactsFormFieldProps } from '../ContactsForm.types.ts';
 
-// @Note: типизации плохо, надо исправить, но из-за HOCa тут какой-то ужас.
+// @Note: типизации плохо, надо исправить, но из-за HOCa тут какой-то ужас аыаыаыаыаы.
 
 export const PhoneField = ({ disabled }: ContactsFormFieldProps) => {
   const phone = useInfoStore((state) => state.contactsInfo.phoneNumber);

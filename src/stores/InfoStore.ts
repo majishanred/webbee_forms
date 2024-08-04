@@ -8,10 +8,11 @@ import { ZodError } from 'zod';
 
 type Errors = Record<string, string[]>;
 
+type Contacts = ContactsInfo & { isValidated: boolean; errors?: Errors };
 type Project = ProjectInfo & { id: number; projectNumber: number; isValidated: boolean; errors?: Errors };
 
 type InfoStoreType = {
-  contactsInfo: ContactsInfo & { isValidated: boolean; errors?: Errors };
+  contactsInfo: Contacts;
   projectsIds: number[];
   projects: {
     [id: number]: Project | null;
@@ -20,10 +21,10 @@ type InfoStoreType = {
   isEverythingValidated: boolean;
 };
 
-type ContactsKeys = keyof ContactsInfo;
-type ProjectKeys = keyof ProjectInfo;
-
-// @Note: надо думать над типизацией, это больно
+/*
+@Note: надо думать над ошибок и общей типизацией некоторых объектов, она так работать не должна.
+Возможно надо изменить саму структуру стора.
+*/
 
 export const useInfoStore = create<InfoStoreType>()(
   immer((set) => ({
@@ -74,17 +75,12 @@ export const validateAll = () =>
     state.isEverythingValidated = !state.contactsInfo.errors && !state.errorEmittersId.length;
   });
 
-//@Note: вот эта штука так типизироваться не должна
-export const changeContactsField = <T extends never>(fieldName: ContactsKeys, value: T) =>
+export const changeContactsField = <T extends keyof ContactsInfo>(fieldName: T, value: Contacts[T]) =>
   useInfoStore.setState((state) => {
     state.contactsInfo[fieldName] = value;
   });
 
-export const changeProjectField = <T extends ProjectKeys>(
-  projectId: number,
-  fieldName: T,
-  value: keyof Pick<ProjectInfo, T>,
-) =>
+export const changeProjectField = <T extends keyof ProjectInfo>(projectId: number, fieldName: T, value: Project[T]) =>
   useInfoStore.setState((state) => {
     if (!state.projects[projectId]) return;
     state.projects[projectId][fieldName] = value;

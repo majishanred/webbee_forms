@@ -6,7 +6,7 @@ import { Box, Chip, FormControl, FormHelperText, InputLabel, MenuItem, Select, T
 import { useProjectErrors } from '../../../hooks/useProjectErrors.ts';
 import { ProjectFormFieldProps } from '../ProjectForm.types.ts';
 
-//@Note: типизация типизация типизация - надо фиксить
+//@Note: типизация типизация  - надо фиксить, проблема из-за того, что оно получает типы из контроллера
 const SkillsField = ({ projectId, disabled }: ProjectFormFieldProps) => {
   const skills = useInfoStore((state) => state.projects[projectId]!.skills);
   const { control, setValue } = useProjectForm();
