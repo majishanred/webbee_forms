@@ -9,9 +9,9 @@ import MiddleNameField from './components/MiddleNameField.tsx';
 import EmailField from './components/EmailField.tsx';
 import PhoneField from './components/PhoneField.tsx';
 import LuboiDvij from './components/LuboiDvij.tsx';
-import StyledForm from '../../styled/StyledForm.tsx';
+import StyledForm from '../../styled/StyledForm.ts';
 import { StyledFormTitle } from '../../styled/StyledFormTitle.ts';
-import { useInfoStore } from '../../stores/InfoStore.tsx';
+import { useInfoStore } from '../../stores/InfoStore.ts';
 
 const ContactsForm = () => {
   const methods = useForm<ContactsInfo>({
@@ -49,7 +49,7 @@ const ContactsForm = () => {
           </Box>
           <Stack gap={2}>
             <Typography>Другое</Typography>
-            <LuboiDvij />
+            <LuboiDvij disabled={isValidated} />
           </Stack>
         </Stack>
       </StyledForm>

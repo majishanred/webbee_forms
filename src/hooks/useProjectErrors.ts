@@ -1,13 +1,14 @@
-import { useInfoStore } from '../stores/InfoStore.tsx';
+import { useInfoStore } from '../stores/InfoStore.ts';
 import { useFormContext } from 'react-hook-form';
 import { useEffect } from 'react';
 
 export const useProjectErrors = (projectId: number, fieldName: string) => {
-  const error = useInfoStore((state) =>
-    state.projects[projectId].errors && state.projects[projectId].errors[fieldName]
+  const error = useInfoStore((state) => {
+    if (!state.projects[projectId]) return undefined;
+    return state.projects[projectId].errors && state.projects[projectId].errors[fieldName]
       ? state.projects[projectId].errors[fieldName]
-      : undefined,
-  );
+      : undefined;
+  });
 
   const { setError, clearErrors } = useFormContext();
 

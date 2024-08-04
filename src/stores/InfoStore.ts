@@ -6,11 +6,8 @@ import { contactsSchema } from '../schemas/ContactsSchema.ts';
 import { projectSchema } from '../schemas/ProjectSchema.ts';
 import { ZodError } from 'zod';
 
-type Errors = {
-  [fieldName: any]: {
-    messages: string[];
-  };
-};
+type Errors = Record<string, string[]>;
+
 type Project = ProjectInfo & { id: number; projectNumber: number; isValidated: boolean; errors?: Errors };
 
 type InfoStoreType = {
@@ -25,6 +22,8 @@ type InfoStoreType = {
 
 type ContactsKeys = keyof ContactsInfo;
 type ProjectKeys = keyof ProjectInfo;
+
+// @Note: надо думать над типизацией, это больно
 
 export const useInfoStore = create<InfoStoreType>()(
   immer((set) => ({
@@ -57,14 +56,16 @@ export const validateAll = () =>
     }
 
     state.projectsIds.forEach((element) => {
+      if (!state.projects[element]) return;
+
       try {
         projectSchema.parse(state.projects[element]);
         state.errorEmittersId = state.errorEmittersId.filter((projectId) => projectId != element);
         state.projects[element]!.isValidated = true;
       } catch (error) {
         if (error instanceof ZodError) {
-          state.projects[element]!.errors = error.formErrors.fieldErrors;
-          state.projects[element]!.isValidated = false;
+          state.projects[element].errors = error.formErrors.fieldErrors;
+          state.projects[element].isValidated = false;
           state.errorEmittersId.push(element);
         }
       }
@@ -73,13 +74,19 @@ export const validateAll = () =>
     state.isEverythingValidated = !state.contactsInfo.errors && !state.errorEmittersId.length;
   });
 
-export const changeContactsField = (fieldName: ContactsKeys, value: string) =>
+//@Note: вот эта штука так типизироваться не должна
+export const changeContactsField = <T extends never>(fieldName: ContactsKeys, value: T) =>
   useInfoStore.setState((state) => {
     state.contactsInfo[fieldName] = value;
   });
 
-export const changeProjectField = (projectId: number, fieldName: ProjectKeys, value: string | string[]) =>
+export const changeProjectField = <T extends ProjectKeys>(
+  projectId: number,
+  fieldName: T,
+  value: keyof Pick<ProjectInfo, T>,
+) =>
   useInfoStore.setState((state) => {
+    if (!state.projects[projectId]) return;
     state.projects[projectId][fieldName] = value;
   });
 
@@ -110,12 +117,14 @@ export const invalidateEverything = () =>
     state.isEverythingValidated = false;
     state.contactsInfo.isValidated = false;
     state.projectsIds.forEach((projectId) => {
+      if (!state.projects[projectId]) return;
       state.projects[projectId].isValidated = false;
     });
   });
 
 export const validateProject = (projectId: number) =>
   useInfoStore.setState((state) => {
+    if (!state.projects[projectId]) return;
     try {
       projectSchema.parse(state.projects[projectId]);
 

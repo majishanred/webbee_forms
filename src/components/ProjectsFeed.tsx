@@ -1,4 +1,4 @@
-import { addProject, useInfoStore } from '../stores/InfoStore.tsx';
+import { addProject, useInfoStore } from '../stores/InfoStore.ts';
 import ProjectForm from './projectForm/ProjectForm.tsx';
 import { Box, Button, styled } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';

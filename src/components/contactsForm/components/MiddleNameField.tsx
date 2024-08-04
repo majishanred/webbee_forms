@@ -2,12 +2,11 @@ import { useEffect } from 'react';
 import { useContactsForm } from '../../../hooks/useContactsForm.ts';
 import { Controller } from 'react-hook-form';
 import { FormControl, FormHelperText, TextField } from '@mui/material';
-import { changeContactsField, useInfoStore } from '../../../stores/InfoStore.tsx';
+import { changeContactsField, useInfoStore } from '../../../stores/InfoStore.ts';
 import { ContactsFormFieldProps } from '../ContactsForm.types.ts';
 
 export const MiddleNameField = ({ disabled }: ContactsFormFieldProps) => {
   const middleName = useInfoStore((state) => state.contactsInfo.middleName);
-  const changeMiddleName = changeContactsField;
   const { control, setValue } = useContactsForm();
 
   useEffect(() => {
@@ -24,7 +23,7 @@ export const MiddleNameField = ({ disabled }: ContactsFormFieldProps) => {
             label="Отчество"
             placeholder="Иванович"
             value={middleName}
-            onChange={(event) => changeMiddleName('middleName', event.target.value)}
+            onChange={(event) => changeContactsField('middleName', event.target.value)}
             error={Boolean(error)}
             disabled={disabled}
           />

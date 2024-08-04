@@ -1,4 +1,4 @@
-import { changeProjectField, useInfoStore } from '../../../stores/InfoStore.tsx';
+import { changeProjectField, useInfoStore } from '../../../stores/InfoStore.ts';
 import { useProjectForm } from '../../../hooks/useProjectForm.ts';
 import { useEffect } from 'react';
 import { Controller } from 'react-hook-form';
@@ -6,9 +6,9 @@ import { Box, Chip, FormControl, FormHelperText, InputLabel, MenuItem, Select, T
 import { useProjectErrors } from '../../../hooks/useProjectErrors.ts';
 import { ProjectFormFieldProps } from '../ProjectForm.types.ts';
 
+//@Note: типизация типизация типизация - надо фиксить
 const SkillsField = ({ projectId, disabled }: ProjectFormFieldProps) => {
   const skills = useInfoStore((state) => state.projects[projectId]!.skills);
-  const changeSkills = changeProjectField;
   const { control, setValue } = useProjectForm();
 
   useEffect(() => {
@@ -27,7 +27,16 @@ const SkillsField = ({ projectId, disabled }: ProjectFormFieldProps) => {
           <Select
             value={skills}
             onChange={(event) => {
-              changeSkills(projectId, 'skills', [...skills, event.target.value]);
+              const targetValue = event.target.value;
+              if (skills.includes(targetValue)) {
+                changeProjectField(
+                  projectId,
+                  'skills',
+                  skills.filter((value) => value != targetValue),
+                );
+                return;
+              }
+              changeProjectField(projectId, 'skills', [...skills, event.target.value]);
             }}
             ref={ref}
             label="Навыки"

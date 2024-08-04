@@ -1,4 +1,4 @@
-import { useInfoStore } from '../stores/InfoStore.tsx';
+import { useInfoStore } from '../stores/InfoStore.ts';
 import { useFormContext } from 'react-hook-form';
 import { useEffect } from 'react';
 

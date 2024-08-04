@@ -5,12 +5,19 @@ export const projectSchema = z
     name: z.string().trim().min(1, 'Обязательное поле'),
     skills: z.string().array().nonempty('Укажи хотя бы один навык плз'),
     role: z.string().min(1, 'Обязательное поле'),
-    beginDate: z.string(),
-    endDate: z.string().optional(),
+    beginDate: z
+      .string()
+      .regex(/\d{2}.\d{2}.\d{4}/, 'Некоректная дата')
+      .length(10, 'Некоректная дата'),
+    endDate: z.optional(
+      z
+        .string()
+        .regex(/\d{2}.\d{2}.\d{4}/)
+        .length(10, 'Некоректная дата'),
+    ),
   })
   .superRefine((arg, ctx) => {
     const { beginDate, endDate } = arg;
-
     if (!endDate) {
       return;
     }
@@ -18,10 +25,7 @@ export const projectSchema = z
     const begin = dayjs(beginDate, 'DD.MM.YYYY').valueOf();
     const end = dayjs(endDate, 'DD.MM.YYYY').valueOf();
 
-    console.log(end - begin);
-
     if (end - begin < 0) {
-      console.log(true);
       ctx.addIssue({
         path: ['endDate'],
         code: z.ZodIssueCode.custom,

@@ -1,34 +1,40 @@
-import { changeContactsField, useInfoStore } from '../../../stores/InfoStore.tsx';
+import { changeContactsField, useInfoStore } from '../../../stores/InfoStore.ts';
 import { useContactsForm } from '../../../hooks/useContactsForm.ts';
 import { useEffect } from 'react';
 import { Controller } from 'react-hook-form';
-import { Checkbox, FormControlLabel, FormHelperText } from '@mui/material';
+import { Checkbox, FormControlLabel, FormGroup, FormHelperText } from '@mui/material';
 import { ContactsFormFieldProps } from '../ContactsForm.types.ts';
+import { useContactsErrors } from '../../../hooks/useContactsErrors.ts';
 
 const LuboiDvij = ({ disabled }: ContactsFormFieldProps) => {
   const luboiDvij = useInfoStore((state) => state.contactsInfo.luboiDvij);
-  const changeLuboiDvij = changeContactsField;
   const { control, setValue } = useContactsForm();
 
   useEffect(() => {
     setValue('luboiDvij', luboiDvij);
   }, [luboiDvij]);
 
+  useContactsErrors('luboiDvij');
+
   return (
     <Controller
       name="luboiDvij"
       control={control}
+      disabled={disabled}
       render={({ fieldState: { error } }) => (
-        <>
+        <FormGroup>
           <FormControlLabel
-            control={<Checkbox disabled={disabled} />}
+            control={<Checkbox />}
             label="За любой движ"
             checked={luboiDvij}
-            onChange={(e) => changeLuboiDvij('luboiDvij', e.target.checked)}
+            onChange={(event) => {
+              // @Note: я пока не очень понимаю как это нормально типизировать, возможно надо изменить декларацию модуля, но она тоже ругается
+              changeContactsField('luboiDvij', event.target.checked);
+            }}
             disabled={disabled}
           />
           <FormHelperText error>{error?.message}</FormHelperText>
-        </>
+        </FormGroup>
       )}
     />
   );

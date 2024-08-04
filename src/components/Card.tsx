@@ -1,10 +1,10 @@
-import { Box, Button, Stack, styled } from '@mui/material';
+import { Box, Button, Stack, styled, Typography } from '@mui/material';
 import { ReactNode, useState } from 'react';
 import ContactsTab from './ContactsTab.tsx';
 import ContactsForm from './contactsForm/ContactsForm.tsx';
 import ProjectsTab from './ProjectsTab.tsx';
 import ProjectsFeed from './ProjectsFeed.tsx';
-import { useInfoStore, validateAll, invalidateEverything } from '../stores/InfoStore.tsx';
+import { useInfoStore, validateAll, invalidateEverything } from '../stores/InfoStore.ts';
 
 const Card = () => {
   const [selectedTab, setSelectedTab] = useState<string>('contacts');
@@ -32,12 +32,12 @@ const SaveButtonWrapper = () => {
     <>
       {!result && (
         <Button variant="contained" sx={{ marginLeft: 'auto' }} onClick={() => validateAll()}>
-          сохранить
+          <Typography textTransform="uppercase">сохранить</Typography>
         </Button>
       )}
       {result && (
         <Button variant="contained" sx={{ marginLeft: 'auto' }} onClick={() => invalidateEverything()}>
-          редактировать
+          <Typography textTransform="uppercase">редактировать</Typography>
         </Button>
       )}
     </>

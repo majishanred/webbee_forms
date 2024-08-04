@@ -9,8 +9,8 @@ import SkillsField from './components/SkillsField.tsx';
 import RoleField from './components/RoleField.tsx';
 import BeginDateField from './components/BeginDateField.tsx';
 import EndingDateField from './components/EndingDateField.tsx';
-import StyledForm from '../../styled/StyledForm.tsx';
-import { deleteProject, invalidateProject, useInfoStore, validateProject } from '../../stores/InfoStore.tsx';
+import StyledForm from '../../styled/StyledForm.ts';
+import { deleteProject, invalidateProject, useInfoStore, validateProject } from '../../stores/InfoStore.ts';
 import { StyledFormTitle } from '../../styled/StyledFormTitle.ts';
 
 const ProjectForm = ({ projectId }: { projectId: number }) => {
@@ -33,7 +33,7 @@ const ProjectForm = ({ projectId }: { projectId: number }) => {
         <Stack gap={2}>
           <Box display="flex" justifyContent="space-between" alignItems="center">
             <StyledFormTitle paddingTop="8px">Проект №{projectNumber}</StyledFormTitle>
-            <Delete onClick={() => deleteProject(projectId)} />
+            {!isValidated && <Delete onClick={() => deleteProject(projectId)} />}
           </Box>
           <NameField projectId={projectId} disabled={isValidated} />
           <SkillsField projectId={projectId} disabled={isValidated} />
@@ -58,12 +58,12 @@ const ButtonWrapper = ({ projectId }: { projectId: number }) => {
     <>
       {!result && (
         <Button variant="contained" sx={{ marginLeft: 'auto' }} onClick={() => validateProject(projectId)}>
-          сохранить
+          <Typography textTransform="uppercase">добавить</Typography>
         </Button>
       )}
       {result && (
         <Button variant="contained" sx={{ marginLeft: 'auto' }} onClick={() => invalidateProject(projectId)}>
-          редактировать
+          <Typography textTransform="uppercase">редактировать</Typography>
         </Button>
       )}
     </>

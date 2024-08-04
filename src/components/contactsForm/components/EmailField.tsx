@@ -1,14 +1,13 @@
 import { Controller } from 'react-hook-form';
 import { FormControl, FormHelperText, TextField } from '@mui/material';
 import { useContactsForm } from '../../../hooks/useContactsForm.ts';
-import { changeContactsField, useInfoStore } from '../../../stores/InfoStore.tsx';
+import { changeContactsField, useInfoStore } from '../../../stores/InfoStore.ts';
 import { useEffect } from 'react';
 import { useContactsErrors } from '../../../hooks/useContactsErrors.ts';
 import { ContactsFormFieldProps } from '../ContactsForm.types.ts';
 
 const EmailField = ({ disabled }: ContactsFormFieldProps) => {
   const email = useInfoStore((state) => state.contactsInfo.email);
-  const changeEmail = changeContactsField;
   const { control, setValue } = useContactsForm();
 
   useEffect(() => {
@@ -27,7 +26,7 @@ const EmailField = ({ disabled }: ContactsFormFieldProps) => {
             label="Email"
             placeholder="example@example.com"
             value={email}
-            onChange={(e) => changeEmail('email', e.target.value)}
+            onChange={(e) => changeContactsField('email', e.target.value)}
             error={Boolean(error)}
             disabled={disabled}
           />

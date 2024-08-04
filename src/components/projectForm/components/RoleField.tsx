@@ -1,4 +1,4 @@
-import { changeProjectField, useInfoStore } from '../../../stores/InfoStore.tsx';
+import { changeProjectField, useInfoStore } from '../../../stores/InfoStore.ts';
 import { useProjectForm } from '../../../hooks/useProjectForm.ts';
 import { useEffect } from 'react';
 import { Controller } from 'react-hook-form';
@@ -8,7 +8,6 @@ import { ProjectFormFieldProps } from '../ProjectForm.types.ts';
 
 const RoleField = ({ projectId, disabled }: ProjectFormFieldProps) => {
   const role = useInfoStore((state) => state.projects[projectId]!.role);
-  const changeRole = changeProjectField;
   const { control, setValue } = useProjectForm();
 
   useEffect(() => {
@@ -27,7 +26,7 @@ const RoleField = ({ projectId, disabled }: ProjectFormFieldProps) => {
           <Select
             label="Роль на проекте"
             value={role}
-            onChange={(event) => changeRole(projectId, 'role', event.target.value)}
+            onChange={(event) => changeProjectField(projectId, 'role', event.target.value)}
             required
             disabled={disabled}
           >

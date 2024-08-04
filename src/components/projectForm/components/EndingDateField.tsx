@@ -1,4 +1,4 @@
-import { changeProjectField, useInfoStore } from '../../../stores/InfoStore.tsx';
+import { changeProjectField, useInfoStore } from '../../../stores/InfoStore.ts';
 import { useProjectForm } from '../../../hooks/useProjectForm.ts';
 import { useEffect } from 'react';
 import { Controller } from 'react-hook-form';
@@ -10,7 +10,6 @@ import { ProjectFormFieldProps } from '../ProjectForm.types.ts';
 
 const EndingDateField = ({ projectId, disabled }: ProjectFormFieldProps) => {
   const endingDate = useInfoStore((state) => state.projects[projectId]!.beginDate);
-  const changeEndingDate = changeProjectField;
   const { control, setValue } = useProjectForm();
 
   const onDateChanges = (e: dayjs.Dayjs | null) => {
@@ -20,7 +19,7 @@ const EndingDateField = ({ projectId, disabled }: ProjectFormFieldProps) => {
 
     if (formatedDate === 'Invalid Date') return;
 
-    changeEndingDate(projectId, 'endDate', formatedDate);
+    changeProjectField(projectId, 'endDate', formatedDate);
   };
 
   useEffect(() => {
