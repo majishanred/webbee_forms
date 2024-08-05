@@ -27,7 +27,7 @@ type InfoStoreType = {
 */
 
 export const useInfoStore = create<InfoStoreType>()(
-  immer((set) => ({
+  immer((_set) => ({
     contactsInfo: {
       firstName: '',
       lastName: '',
