@@ -1,8 +1,9 @@
 import { useInfoStore } from '../stores/InfoStore.ts';
 import { useFormContext } from 'react-hook-form';
 import { useEffect } from 'react';
+import { ProjectInfo } from '../types/Project.ts';
 
-export const useProjectErrors = (projectId: number, fieldName: string) => {
+export const useProjectErrors = (projectId: number, fieldName: keyof ProjectInfo) => {
   const error = useInfoStore((state) => {
     if (!state.projects[projectId]) return undefined;
     return state.projects[projectId].errors && state.projects[projectId].errors[fieldName]

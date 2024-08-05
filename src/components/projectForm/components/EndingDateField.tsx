@@ -3,26 +3,28 @@ import { useProjectForm } from '../../../hooks/useProjectForm.ts';
 import { Controller } from 'react-hook-form';
 import { FormControl, FormHelperText } from '@mui/material';
 import { DateField } from '@mui/x-date-pickers';
-import dayjs from 'dayjs';
+import { Dayjs } from 'dayjs';
 import { useProjectErrors } from '../../../hooks/useProjectErrors.ts';
 import { ProjectFormFieldProps } from '../ProjectForm.types.ts';
 import { formatDate } from '../../../utils/formatDate.ts';
+import { useCallback } from 'react';
 
 const EndingDateField = ({ projectId, disabled }: ProjectFormFieldProps) => {
   const endingDate = useInfoStore((state) => state.projects[projectId]!.endDate);
   const { control } = useProjectForm();
 
-  const onDateChanges = (e: dayjs.Dayjs | null) => {
-    if (!e) return;
-
-    const formatedDate = e.format('DD.MM.YYYY');
-
-    if (formatedDate === 'Invalid Date') return;
-
-    changeProjectField(projectId, 'endDate', formatedDate);
-  };
-
   useProjectErrors(projectId, 'endDate');
+
+  const changeDate = useCallback((e: Dayjs | null) => {
+    if (!e) {
+      changeProjectField(projectId, 'endDate', undefined);
+      return;
+    }
+
+    if (e.isValid()) {
+      changeProjectField(projectId, 'endDate', e.format('DD.MM.YYYY'));
+    }
+  }, []);
 
   return (
     <Controller
@@ -33,11 +35,15 @@ const EndingDateField = ({ projectId, disabled }: ProjectFormFieldProps) => {
           <DateField
             label="Завершение работы"
             format="DD.MM.YYYY"
-            onChange={onDateChanges}
-            disabled={disabled}
             value={formatDate(endingDate)}
-            onError={(error) => console.log(error)}
+            onChange={changeDate}
+            disabled={disabled}
             clearable
+            slotProps={{
+              textField: {
+                error: Boolean(error),
+              },
+            }}
           />
           <FormHelperText error>{error?.message ?? ''}</FormHelperText>
         </FormControl>

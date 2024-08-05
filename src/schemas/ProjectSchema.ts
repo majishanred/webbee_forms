@@ -6,7 +6,9 @@ export const projectSchema = z
     skills: z.string().array().nonempty('Укажи хотя бы один навык плз'),
     role: z.string().min(1, 'Обязательное поле'),
     beginDate: z
-      .string()
+      .string({
+        message: 'Дату когда стартуем введи',
+      })
       .regex(/\d{2}.\d{2}.\d{4}/, 'Некоректная дата')
       .length(10, 'Некоректная дата'),
     endDate: z.optional(

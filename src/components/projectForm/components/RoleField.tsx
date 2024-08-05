@@ -17,13 +17,14 @@ const RoleField = ({ projectId, disabled }: ProjectFormFieldProps) => {
       control={control}
       render={({ fieldState: { error } }) => (
         <FormControl fullWidth required>
-          <InputLabel>Роль на проекте</InputLabel>
+          <InputLabel error={Boolean(error)}>Роль на проекте</InputLabel>
           <Select
             label="Роль на проекте"
             value={role}
             onChange={(event) => changeProjectField(projectId, 'role', event.target.value)}
             required
             disabled={disabled}
+            error={Boolean(error)}
           >
             {roles.map((role, index) => (
               <MenuItem key={index} value={role}>

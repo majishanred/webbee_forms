@@ -24,6 +24,7 @@ const NameField = ({ projectId, disabled }: ProjectFormFieldProps) => {
             onChange={(e) => changeProjectField(projectId, 'name', e.target.value)}
             error={Boolean(error)}
             disabled={disabled}
+            required
           />
           <FormHelperText error>{error?.message ?? ''}</FormHelperText>
         </FormControl>

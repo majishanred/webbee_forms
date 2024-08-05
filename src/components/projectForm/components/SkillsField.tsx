@@ -17,7 +17,9 @@ const SkillsField = ({ projectId, disabled }: ProjectFormFieldProps) => {
       control={control}
       render={({ field: { ref }, fieldState: { error } }) => (
         <FormControl>
-          <InputLabel required>Навыки</InputLabel>
+          <InputLabel required error={Boolean(error)}>
+            Навыки
+          </InputLabel>
           <Select
             value={skills}
             onChange={(event) => {
@@ -41,6 +43,7 @@ const SkillsField = ({ projectId, disabled }: ProjectFormFieldProps) => {
             )}
             required
             disabled={disabled}
+            error={Boolean(error)}
           >
             {sklls.map((skill, index) => (
               <MenuItem key={index} value={skill}>
