@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { useContactsForm } from '../../../hooks/useContactsForm.ts';
 import { Controller } from 'react-hook-form';
 import { FormControl, FormHelperText, TextField } from '@mui/material';
@@ -7,11 +6,7 @@ import { ContactsFormFieldProps } from '../ContactsForm.types.ts';
 
 export const MiddleNameField = ({ disabled }: ContactsFormFieldProps) => {
   const middleName = useInfoStore((state) => state.contactsInfo.middleName);
-  const { control, setValue } = useContactsForm();
-
-  useEffect(() => {
-    setValue('middleName', middleName);
-  }, [middleName]);
+  const { control } = useContactsForm();
 
   return (
     <Controller

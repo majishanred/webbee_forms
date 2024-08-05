@@ -1,6 +1,5 @@
 import { changeProjectField, useInfoStore } from '../../../stores/InfoStore.ts';
 import { useProjectForm } from '../../../hooks/useProjectForm.ts';
-import { useEffect } from 'react';
 import { Controller } from 'react-hook-form';
 import { Box, Chip, FormControl, FormHelperText, InputLabel, MenuItem, Select, Typography } from '@mui/material';
 import { useProjectErrors } from '../../../hooks/useProjectErrors.ts';
@@ -8,11 +7,7 @@ import { ProjectFormFieldProps } from '../ProjectForm.types.ts';
 
 const SkillsField = ({ projectId, disabled }: ProjectFormFieldProps) => {
   const skills = useInfoStore((state) => state.projects[projectId]!.skills);
-  const { control, setValue } = useProjectForm();
-
-  useEffect(() => {
-    setValue('skills', skills);
-  }, [skills]);
+  const { control } = useProjectForm();
 
   useProjectErrors(projectId, 'skills');
 

@@ -1,6 +1,5 @@
 import { changeProjectField, useInfoStore } from '../../../stores/InfoStore.ts';
 import { useProjectForm } from '../../../hooks/useProjectForm.ts';
-import { useEffect } from 'react';
 import { Controller } from 'react-hook-form';
 import { FormControl, FormHelperText, InputLabel, MenuItem, Select, Typography } from '@mui/material';
 import { useProjectErrors } from '../../../hooks/useProjectErrors.ts';
@@ -8,11 +7,7 @@ import { ProjectFormFieldProps } from '../ProjectForm.types.ts';
 
 const RoleField = ({ projectId, disabled }: ProjectFormFieldProps) => {
   const role = useInfoStore((state) => state.projects[projectId]!.role);
-  const { control, setValue } = useProjectForm();
-
-  useEffect(() => {
-    setValue('role', role);
-  }, [role]);
+  const { control } = useProjectForm();
 
   useProjectErrors(projectId, 'role');
 

@@ -1,6 +1,5 @@
 import { changeContactsField, useInfoStore } from '../../../stores/InfoStore.ts';
 import { useContactsForm } from '../../../hooks/useContactsForm.ts';
-import { useEffect } from 'react';
 import { Controller } from 'react-hook-form';
 import { Checkbox, FormControlLabel, FormGroup, FormHelperText } from '@mui/material';
 import { ContactsFormFieldProps } from '../ContactsForm.types.ts';
@@ -8,11 +7,7 @@ import { useContactsErrors } from '../../../hooks/useContactsErrors.ts';
 
 const LuboiDvij = ({ disabled }: ContactsFormFieldProps) => {
   const luboiDvij = useInfoStore((state) => state.contactsInfo.luboiDvij);
-  const { control, setValue } = useContactsForm();
-
-  useEffect(() => {
-    setValue('luboiDvij', luboiDvij);
-  }, [luboiDvij]);
+  const { control } = useContactsForm();
 
   useContactsErrors('luboiDvij');
 

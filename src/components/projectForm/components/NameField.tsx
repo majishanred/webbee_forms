@@ -1,5 +1,4 @@
 import { changeProjectField, useInfoStore } from '../../../stores/InfoStore.ts';
-import { useEffect } from 'react';
 import { Controller } from 'react-hook-form';
 import { FormControl, FormHelperText, TextField } from '@mui/material';
 import { useProjectForm } from '../../../hooks/useProjectForm.ts';
@@ -8,11 +7,7 @@ import { ProjectFormFieldProps } from '../ProjectForm.types.ts';
 
 const NameField = ({ projectId, disabled }: ProjectFormFieldProps) => {
   const projectName = useInfoStore((state) => state.projects[projectId]!.name);
-  const { control, setValue } = useProjectForm();
-
-  useEffect(() => {
-    setValue('name', projectName);
-  }, [projectName]);
+  const { control } = useProjectForm();
 
   useProjectErrors(projectId, 'name');
 
