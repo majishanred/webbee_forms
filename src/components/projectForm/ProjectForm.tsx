@@ -1,8 +1,6 @@
 import { FormProvider, useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Button, Stack, Typography } from '@mui/material';
 import { ProjectInfo } from '../../types/Project.ts';
-import { projectSchema } from '../../schemas/ProjectSchema.ts';
 import { Delete } from '@mui/icons-material';
 import NameField from './components/NameField.tsx';
 import SkillsField from './components/SkillsField.tsx';
@@ -17,15 +15,7 @@ const ProjectForm = ({ projectId }: { projectId: number }) => {
   const projectNumber = useInfoStore((state) => state.projects[projectId]!.projectNumber);
   const isValidated = useInfoStore((state) => state.projects[projectId]!.isValidated);
 
-  const methods = useForm<ProjectInfo>({
-    resolver: zodResolver(projectSchema),
-    defaultValues: {
-      name: '',
-      skills: [],
-      role: '',
-      beginDate: '',
-    },
-  });
+  const methods = useForm<ProjectInfo>();
 
   return (
     <FormProvider {...methods}>

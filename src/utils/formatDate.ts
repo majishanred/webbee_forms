@@ -1,12 +1,9 @@
-export const formatToDDMMYYYY = (date: string) => {
-  if (!date) return '';
-  if (date.length < 10) return date;
-  const [year, month, day] = date.split('-');
-  return day + '.' + month + '.' + year;
-};
+import dayjs from 'dayjs';
 
-export const formatToZodDate = (date: string) => {
-  if (date.length < 10) return date;
-  const [day, month, year] = date.split('.');
-  return year + '-' + month + '-' + day;
+export const formatDate = (date: string | undefined) => {
+  const formatedDate = dayjs(date, 'DD.MM.YYYY').format();
+
+  if (formatedDate === 'Invalid Date') return null;
+
+  return dayjs(date, 'DD.MM.YYYY');
 };

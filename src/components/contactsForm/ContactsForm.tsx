@@ -1,6 +1,4 @@
 import { FormProvider, useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { contactsSchema } from '../../schemas/ContactsSchema.ts';
 import { Box, Stack, Typography } from '@mui/material';
 import { ContactsInfo } from '../../types/Contacts.ts';
 import FirstNameField from './components/FirstNameField.tsx';
@@ -14,15 +12,7 @@ import { StyledFormTitle } from '../../styled/StyledFormTitle.ts';
 import { useInfoStore } from '../../stores/InfoStore.ts';
 
 const ContactsForm = () => {
-  const methods = useForm<ContactsInfo>({
-    resolver: zodResolver(contactsSchema),
-    defaultValues: {
-      firstName: '',
-      lastName: '',
-      phoneNumber: '',
-      luboiDvij: true,
-    },
-  });
+  const methods = useForm<ContactsInfo>();
 
   const isValidated = useInfoStore((state) => state.isEverythingValidated);
 

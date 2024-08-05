@@ -6,6 +6,7 @@ import { DateField } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
 import { useProjectErrors } from '../../../hooks/useProjectErrors.ts';
 import { ProjectFormFieldProps } from '../ProjectForm.types.ts';
+import { formatDate } from '../../../utils/formatDate.ts';
 
 const BeginDateField = ({ projectId, disabled }: ProjectFormFieldProps) => {
   const beginDate = useInfoStore((state) => state.projects[projectId]!.beginDate);
@@ -31,10 +32,11 @@ const BeginDateField = ({ projectId, disabled }: ProjectFormFieldProps) => {
           <DateField
             label="Начало работы"
             format="DD.MM.YYYY"
-            value={dayjs(beginDate, 'DD.MM.YYYY')}
+            value={formatDate(beginDate)}
             onChange={onDateChanges}
             required
             disabled={disabled}
+            clearable
           />
           <FormHelperText error>{error?.message ?? ''}</FormHelperText>
         </FormControl>

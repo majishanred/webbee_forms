@@ -93,7 +93,7 @@ export const addProject = () =>
       name: '',
       skills: [],
       role: '',
-      beginDate: '',
+      beginDate: undefined,
       projectNumber: state.projectsIds.length + 1,
       isValidated: false,
     };

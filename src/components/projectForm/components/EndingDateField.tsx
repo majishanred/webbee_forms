@@ -6,9 +6,10 @@ import { DateField } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
 import { useProjectErrors } from '../../../hooks/useProjectErrors.ts';
 import { ProjectFormFieldProps } from '../ProjectForm.types.ts';
+import { formatDate } from '../../../utils/formatDate.ts';
 
 const EndingDateField = ({ projectId, disabled }: ProjectFormFieldProps) => {
-  const endingDate = useInfoStore((state) => state.projects[projectId]!.beginDate);
+  const endingDate = useInfoStore((state) => state.projects[projectId]!.endDate);
   const { control } = useProjectForm();
 
   const onDateChanges = (e: dayjs.Dayjs | null) => {
@@ -34,9 +35,9 @@ const EndingDateField = ({ projectId, disabled }: ProjectFormFieldProps) => {
             format="DD.MM.YYYY"
             onChange={onDateChanges}
             disabled={disabled}
-            value={dayjs(endingDate, 'DD.MM.YYYY')}
+            value={formatDate(endingDate)}
             onError={(error) => console.log(error)}
-            onErrorCapture={(e) => console.log(e)}
+            clearable
           />
           <FormHelperText error>{error?.message ?? ''}</FormHelperText>
         </FormControl>
