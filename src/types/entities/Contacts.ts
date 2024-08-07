@@ -1,14 +1,14 @@
 export type ContactsInfo = {
-  firstName: string;
+  firstName?: string;
   middleName?: string;
-  lastName: string;
-  phoneNumber: string;
+  lastName?: string;
+  phoneNumber?: string;
   email?: string;
-  luboiDvij: boolean;
+  luboiDvij?: boolean;
 };
 
 export type ContactsType = {
   contactsInfo: ContactsInfo;
-  hasError: unknown;
+  hasError: boolean;
   changing: boolean;
 };

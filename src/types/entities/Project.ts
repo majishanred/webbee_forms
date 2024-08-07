@@ -1,9 +1,9 @@
 export type ProjectInfo = {
-  name: string;
-  skills: string[];
-  role: string;
-  beginDate: string | undefined;
-  endDate?: string | undefined;
+  name?: string;
+  skills?: string[];
+  role?: string;
+  beginDate?: string;
+  endDate?: string;
 };
 
 export type Project = {
