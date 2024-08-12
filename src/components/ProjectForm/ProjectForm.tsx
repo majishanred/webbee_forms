@@ -3,105 +3,75 @@ import { Box, Button, Stack } from '@mui/material';
 import { StyledFormTitle } from '../../styled/StyledFormTitle.ts';
 import { Delete } from '@mui/icons-material';
 import FormFieldWrapper from '../FormFieldWrapper/FormFieldWrapper.tsx';
-import { Project, useDataMethods } from '../../providers/FormsProvider.tsx';
-import { ProjectInfo } from '../../types/entities/Project.ts';
-import { FieldErrors, useForm } from 'react-hook-form';
-import { MutableRefObject, useEffect, useRef } from 'react';
+import { useFieldArray, useFormContext, useWatch } from 'react-hook-form';
 import DateComponent from './DateComponent.tsx';
 import SkillsComponent from './SkillsComponent.tsx';
 import rolesComponent from './RolesComponent.tsx';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { projectSchema } from '../../schemas/ProjectSchema.ts';
-import { Forms } from '../Card/Card.tsx';
+import { useIsFormActive, useSetIsFormActive } from '../Card/IsFormActive.context.tsx';
+import { Forms } from '../Card/Card.types.ts';
 
-/*
- * @Note: нельзя там в кнопке вставить тернарник, она тогда работает не так как ожиадется
- * (она крч повторно вызывает onSubmit). Откуда такое поведение - загадка дыры.
- * */
-export const ProjectForm = ({ project, formsRefs }: { project: Project; formsRefs: MutableRefObject<Forms> }) => {
-  const { isValidated, projectData, errors } = project;
-  const { name, skills, role, beginDate, projectId, projectNumber } = projectData;
+export const ProjectForm = ({ index }: { index: number }) => {
+  const { control, trigger, setValue, getValues } = useFormContext<Forms>();
 
-  const { control, handleSubmit, getValues, formState } = useForm<ProjectInfo>({
-    defaultValues: {
-      name,
-      skills,
-      role,
-      beginDate,
-    },
-    errors: errors as FieldErrors,
-    resolver: zodResolver(projectSchema),
+  const { update, remove } = useFieldArray<Forms>({
+    name: 'projects',
   });
 
-  const methods = useDataMethods();
-  const formRef = useRef<HTMLFormElement>(null);
+  const projectData = useWatch({
+    name: `projects[${index}]`,
+  });
 
-  useEffect(() => {
-    formsRefs.current.projectsForms.push({
-      projectId: projectId,
-      form: formRef.current!,
-    });
+  const isFormActive = useIsFormActive();
+  const setFormIsActive = useSetIsFormActive();
+  const isValidated = !isFormActive || projectData.isValidated;
 
-    return () => {
-      formsRefs.current.projectsForms = formsRefs.current.projectsForms.filter((form) => form?.projectId !== projectId);
-    };
-  }, []);
-
-  useEffect(() => {
-    methods.changeProject({
-      isValidated,
-      errors: formState.errors,
-      projectData: {
-        ...project.projectData,
-        ...getValues(),
-      },
-    });
-  }, [formState.errors]);
-
-  const onSubmit = (projectData: ProjectInfo) => {
-    methods.changeProject({
-      isValidated: true,
-      errors: {},
-      projectData: {
-        ...projectData,
-        projectId: projectId,
-        projectNumber: projectNumber,
-      },
-    });
+  const deleteProject = () => {
+    const projects = getValues().projects.filter((project) => project.projectId !== projectData.projectId);
+    remove(index);
+    setValue('projects', projects);
   };
 
-  const onInvalid = (e: FieldErrors) => {
-    methods.changeProject({
-      ...project,
-      isValidated: false,
-      errors: e,
-    });
+  const validate = async () => {
+    //@Note: хз как это типизировать, может ts-ignore?
+    const result = await trigger(`projects[${index}]`);
+    if (result) update(index, { ...projectData, isValidated: true });
   };
 
+  const revalidate = async () => {
+    update(index, { ...projectData, isValidated: false });
+    setFormIsActive(true);
+  };
   return (
-    <StyledForm noValidate onSubmit={handleSubmit(onSubmit, onInvalid)} ref={formRef}>
+    <StyledForm noValidate>
       <Stack gap={2}>
         <Box display="flex" justifyContent="space-between" alignItems="center">
-          <StyledFormTitle paddingTop="8px">Проект №{projectNumber}</StyledFormTitle>
-          {!isValidated && <Delete onClick={() => methods.deleteProject(project)} />}
+          <StyledFormTitle paddingTop="8px">Проект №{index + 1}</StyledFormTitle>
+          {!isValidated && (
+            <Delete
+              onClick={() => {
+                deleteProject();
+              }}
+              tabIndex={0}
+            />
+          )}
         </Box>
         <FormFieldWrapper
-          fieldName={'name'}
+          fieldName={`projects[${index}].name`}
           control={control}
           label={'Название проекта'}
           required={true}
           disabled={isValidated}
         />
         <FormFieldWrapper
-          fieldName={'skills'}
+          fieldName={`projects[${index}].skills`}
           control={control}
           label={'Умения'}
           required={true}
-          disabled={isValidated}
           RenderComponent={SkillsComponent}
+          disabled={isValidated}
         />
         <FormFieldWrapper
-          fieldName={'role'}
+          fieldName={`projects[${index}].role`}
           control={control}
           label={'Роль на проекте'}
           required={true}
@@ -110,48 +80,38 @@ export const ProjectForm = ({ project, formsRefs }: { project: Project; formsRef
         />
         <Box display="flex" gap={1}>
           <FormFieldWrapper
-            fieldName={'beginDate'}
+            fieldName={`projects[${index}].beginDate`}
             control={control}
             label={'Начало работы'}
             required={true}
-            disabled={isValidated}
             formControlProps={{
               fullWidth: true,
             }}
             RenderComponent={DateComponent}
+            disabled={isValidated}
           />
           <FormFieldWrapper
-            fieldName={'endDate'}
+            fieldName={`projects[${index}].endDate`}
             control={control}
             label={'Завершение работы'}
             formControlProps={{
               fullWidth: true,
             }}
-            disabled={isValidated}
             RenderComponent={DateComponent}
+            disabled={isValidated}
           />
         </Box>
       </Stack>
       <Stack marginTop={2}>
         <Stack marginLeft="auto">
-          {isValidated && (
-            <Button
-              onClick={() =>
-                methods.changeProject({
-                  ...project,
-                  isValidated: false,
-                })
-              }
-              variant="contained"
-            >
-              Редактировать
-            </Button>
-          )}
-          {!isValidated && (
-            <Button type="submit" variant="contained">
-              Сохранить
-            </Button>
-          )}
+          <Button
+            variant="contained"
+            onClick={() => {
+              isValidated ? revalidate() : validate();
+            }}
+          >
+            {isValidated ? 'Редактировать' : 'Сохранить'}
+          </Button>
         </Stack>
       </Stack>
     </StyledForm>

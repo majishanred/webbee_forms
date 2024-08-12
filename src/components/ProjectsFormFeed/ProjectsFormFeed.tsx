@@ -1,22 +1,40 @@
-import { useData, useDataMethods } from '../../providers/FormsProvider.tsx';
-import { ProjectForm } from '../ProjectForm/ProjectForm.tsx';
 import { Box, Button, styled } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import { MutableRefObject } from 'react';
-import { Forms } from '../Card/Card.tsx';
+import { useFieldArray } from 'react-hook-form';
+import { ProjectForm } from '../ProjectForm/ProjectForm.tsx';
+import { useCallback } from 'react';
+import { useSetIsFormActive } from '../Card/IsFormActive.context.tsx';
+import { Forms } from '../Card/Card.types.ts';
 
-const ProjectsFormFeed = ({ formsRefs }: { formsRefs: MutableRefObject<Forms> }) => {
-  const projects = useData().projects;
-  const methods = useDataMethods();
+const ProjectsFormFeed = () => {
+  const { fields, append } = useFieldArray<Forms>({
+    name: 'projects',
+  });
+
+  const addNewProject = useCallback(() => {
+    append([
+      {
+        projectId: Date.now(),
+        name: '',
+        skills: [],
+        role: '',
+        beginDate: '',
+        isValidated: false,
+      },
+    ]);
+  }, [fields, append]);
+
+  const setIsFormActive = useSetIsFormActive();
 
   return (
     <StyledContainer>
-      {projects.map((project) => (
-        <ProjectForm project={project} key={project.projectData.projectId} formsRefs={formsRefs} />
+      {fields.map((project, index) => (
+        <ProjectForm index={index} key={project.id} />
       ))}
       <Button
         onClick={() => {
-          methods.addNewProject();
+          addNewProject();
+          setIsFormActive(true);
         }}
       >
         <AddIcon sx={{ width: 64, height: 64 }} />

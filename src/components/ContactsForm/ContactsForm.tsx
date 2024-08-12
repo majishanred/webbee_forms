@@ -1,4 +1,3 @@
-import { ContactsInfo } from '../../types/entities/Contacts.ts';
 import StyledForm from '../../styled/StyledForm.ts';
 import {
   Box,
@@ -13,81 +12,42 @@ import {
 } from '@mui/material';
 import { StyledFormTitle } from '../../styled/StyledFormTitle.ts';
 import FormFieldWrapper from '../FormFieldWrapper/FormFieldWrapper.tsx';
-import { useData, useDataMethods } from '../../providers/FormsProvider.tsx';
-import { FieldError, SubmitHandler, useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { contactsSchema } from '../../schemas/ContactsSchema.ts';
-import { MutableRefObject, useEffect, useRef } from 'react';
+import { FieldError, useFormContext } from 'react-hook-form';
 import { useIMask } from 'react-imask';
-import { Forms } from '../Card/Card.tsx';
+import { useIsFormActive } from '../Card/IsFormActive.context.tsx';
+import { Forms } from '../Card/Card.types.ts';
 
-export const ContactsForm = ({ formsRefs }: { formsRefs: MutableRefObject<Forms> }) => {
-  const { isValidated, contactsData, errors } = useData().contacts;
-  const { firstName, lastName, middleName, email, luboiDvij, phoneNumber } = contactsData;
-  const { control, handleSubmit, getValues, formState } = useForm<ContactsInfo>({
-    defaultValues: {
-      firstName,
-      lastName,
-      middleName,
-      email,
-      luboiDvij,
-      phoneNumber,
-    },
-    disabled: isValidated,
-    resolver: zodResolver(contactsSchema),
-    errors: errors,
-  });
-
-  const methods = useDataMethods();
-  const formRef = useRef<HTMLFormElement | null>(null);
-
-  useEffect(() => {
-    formsRefs.current.contactsForm = formRef.current;
-
-    return () => {
-      formsRefs.current.contactsForm = null;
-    };
-  }, []);
-
-  useEffect(() => {
-    methods.changeContacts({
-      isValidated,
-      errors: formState.errors,
-      contactsData: getValues(),
-    });
-  }, [formState.errors]);
-
-  const onSubmit: SubmitHandler<ContactsInfo> = (data) => {
-    methods.changeContacts({
-      isValidated: true,
-      errors: {},
-      contactsData: data,
-    });
-  };
-  const onInvalid = () => {};
+export const ContactsForm = () => {
+  const { control } = useFormContext<Forms>();
+  const isFormActive = useIsFormActive();
 
   return (
-    <StyledForm noValidate onSubmit={handleSubmit(onSubmit, onInvalid)} ref={formRef}>
+    <StyledForm noValidate>
       <Stack gap={2}>
         <Box>
           <StyledFormTitle>Общая информация</StyledFormTitle>
         </Box>
         <Box display="flex" gap={1}>
           <FormFieldWrapper
-            fieldName="lastName"
-            disabled={isValidated}
+            fieldName="contacts.lastName"
             control={control}
             label={'Фамилия'}
             required={true}
+            disabled={!isFormActive}
           />
           <FormFieldWrapper
-            fieldName="firstName"
-            disabled={isValidated}
+            fieldName="contacts.firstName"
             control={control}
             label={'Имя'}
             required={true}
+            disabled={!isFormActive}
           />
-          <FormFieldWrapper fieldName="middleName" disabled={isValidated} control={control} label={'Отчество'} />
+          <FormFieldWrapper
+            fieldName="contacts.middleName"
+            control={control}
+            label={'Отчество'}
+            disabled={!isFormActive}
+          />
         </Box>
       </Stack>
       <Stack gap={2} marginTop={2}>
@@ -96,23 +56,23 @@ export const ContactsForm = ({ formsRefs }: { formsRefs: MutableRefObject<Forms>
         </Box>
         <Box display="flex" gap={1}>
           <FormFieldWrapper
-            fieldName="phoneNumber"
+            fieldName="contacts.phoneNumber"
             control={control}
             label={'Номер телефона'}
             required={true}
-            disabled={isValidated}
             RenderComponent={PhoneNumberComponent}
+            disabled={!isFormActive}
           />
-          <FormFieldWrapper fieldName="email" disabled={isValidated} control={control} label={'Email'} />
+          <FormFieldWrapper fieldName="contacts.email" control={control} label={'Email'} disabled={!isFormActive} />
         </Box>
         <Stack gap={2}>
           <Typography>Другое</Typography>
           <FormFieldWrapper
-            fieldName="luboiDvij"
+            fieldName="contacts.luboiDvij"
             label={'Hui ego poka cho znaet'}
             control={control}
-            disabled={isValidated}
             RenderComponent={LuboiDvijComponent}
+            disabled={!isFormActive}
           />
         </Stack>
       </Stack>

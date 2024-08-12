@@ -1,4 +1,8 @@
+import { FieldErrors } from 'react-hook-form';
+
 export type ProjectInfo = {
+  projectId: number;
+  isValidated: boolean;
   name?: string;
   skills?: string[];
   role?: string;
@@ -8,7 +12,6 @@ export type ProjectInfo = {
 
 export type Project = {
   id: number;
-  projectNumber: number;
   projectInfo: ProjectInfo;
   changing: boolean;
   error: unknown;

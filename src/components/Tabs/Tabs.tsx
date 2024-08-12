@@ -1,35 +1,37 @@
-import StyledTab from '../../styled/StyledTab.ts';
-import { createContext, FC, PropsWithChildren, useState } from 'react';
-import { Box } from '@mui/material';
-import {useData} from "../../providers/FormsProvider.tsx";
+import Tab from './Tab.tsx';
+import { createContext, useContext, useState } from 'react';
+import { Box, Stack, styled } from '@mui/material';
+import { TabsContextType, TabType } from './Tabs.types.ts';
 
-type Tab = {
-  Tab:
-  Component: FC;
+const ChooseTabContext = createContext<TabsContextType | null>(null);
+
+export const useIsTabChosen = (tab: TabType) => {
+  const ctx = useContext(ChooseTabContext);
+  if (!ctx) throw new Error('No context provided');
+
+  const { tab: selectedTab, setTab } = ctx;
+
+  return [selectedTab === tab, setTab];
 };
 
-const TabsContext = createContext<Tab | null>(null);
-
-export const Tabs = ({ formsRef, tabs }: { formsRef: any; tabs: Tab[] }) => {
-  const [selectedTab, setSelectedTab] = useState<title>(null);
-
+const Tabs = ({ tabs }: { tabs: TabType[] }) => {
+  const [component, setComponent] = useState<TabType>(tabs[0]);
+  const tabList = tabs.map((tab, index) => <Tab tab={tab} key={index} />);
   return (
-    <TabsProvider tabs={tabs}>
-      <Box>
-      </Box>
-    </TabsProvider>
+    <Stack>
+      <ChooseTabContext.Provider value={{ tab: component, setTab: setComponent }}>
+        <Box>{tabList}</Box>
+      </ChooseTabContext.Provider>
+      <StyledSection>{component.component}</StyledSection>
+    </Stack>
   );
 };
 
-type Label = 'contacts' | 'projects'
+const StyledSection = styled(Box)`
+  display: flex;
+  border: 1px solid ${({ theme }) => theme.palette.primary.main};
+  padding: ${({ theme }) => theme.spacing(2)};
+  background-color: ${({ theme }) => theme.palette.backgroundColors.lightBlue};
+`;
 
-const Tab = ({ title, label }: { title: string; label: Label }) => {
-  const errors = useData()[label].errors;
-
-}
-
-const TabsProvider = ({ children, tabs }: { tabs: Tab[] } & PropsWithChildren) => {
-  const [tab, setTab] = useState<Tab>(tabs[0]);
-
-  return <TabsContext.Provider value={{ tab }}>{children}</TabsContext.Provider>;
-};
+export default Tabs;
