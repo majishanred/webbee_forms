@@ -5,3 +5,8 @@ export type Forms = {
   contacts: ContactsInfo;
   projects: ProjectInfo[];
 };
+
+export type TabType = {
+  label: string;
+  component: JSX.Element;
+};

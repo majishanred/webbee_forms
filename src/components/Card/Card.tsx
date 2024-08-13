@@ -1,13 +1,12 @@
-import { Box, Button, Stack, styled } from '@mui/material';
-import ContactsForm from '../ContactsForm/ContactsForm.tsx';
-import ProjectsFormFeed from '../ProjectsFormFeed/ProjectsFormFeed.tsx';
+import { Box, Button, Stack, styled, Tab, TabProps, Tabs, TabsProps } from '@mui/material';
 import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { bigSchema } from '../../schemas/BigSchema.ts';
-import Tabs from '../Tabs/Tabs.tsx';
 import { IsFormActiveProvider } from './IsFormActive.context.tsx';
 import { useState } from 'react';
-import { Forms } from './Card.types.ts';
+import { Forms, TabType } from './Card.types.ts';
+import { tabs } from './Card.constants.tsx';
+import { isObjectEmpty } from '../../utils/isObjectEmpty.ts';
 
 const Card = () => {
   const methods = useForm<Forms>({
@@ -24,12 +23,22 @@ const Card = () => {
   });
 
   const [isFormActive, setIsFormActive] = useState<boolean>(true);
+  const [tab, setTab] = useState<TabType>(tabs[0]);
 
   return (
     <FormProvider {...methods}>
       <StyledContainer>
         <IsFormActiveProvider isActive={isFormActive} setIsActive={setIsFormActive}>
-          <Tabs tabs={tabs} />
+          <StyledTabs
+            value={tab}
+            onChange={(_event, newTab) => setTab(newTab)}
+            hasErrors={!isObjectEmpty(methods.formState.errors)}
+          >
+            {tabs.map((tab, index) => (
+              <StyledTab value={tab} label={tab.title} key={index} hasErrors={!!methods.formState.errors[tab.label]} />
+            ))}
+          </StyledTabs>
+          <StyledSection>{tab.component}</StyledSection>
         </IsFormActiveProvider>
         <StyledSection justifyContent="flex-end">
           <Button
@@ -55,10 +64,18 @@ const Card = () => {
   );
 };
 
-const tabs = [
-  { title: 'Контактная информация', label: 'contacts', component: <ContactsForm /> },
-  { title: 'Проекты', label: 'projects', component: <ProjectsFormFeed /> },
-];
+const StyledTab = styled(Tab)<TabProps & { hasErrors?: boolean }>`
+  border-bottom: ${({ hasErrors }) => (hasErrors ? '2px' : '0')};
+  & .MuiButtonBase-root .MuiTab-root {
+    color: ${({ hasErrors, theme }) => (hasErrors ? theme.palette.error.main : theme.palette.primary.main)};
+  }
+`;
+
+const StyledTabs = styled(Tabs)<TabsProps & { hasErrors?: boolean }>`
+  & .MuiTabs-indicator {
+    ${({ hasErrors, theme }) => hasErrors && 'background-color: ' + theme.palette.error.main};
+  }
+`;
 
 const StyledContainer = styled(Stack)`
   display: grid;

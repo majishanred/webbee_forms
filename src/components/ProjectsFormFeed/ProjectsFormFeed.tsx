@@ -29,7 +29,7 @@ const ProjectsFormFeed = () => {
   return (
     <StyledContainer>
       {fields.map((project, index) => (
-        <ProjectForm index={index} key={project.id} />
+        <ProjectForm projectIndex={index} key={project.id} />
       ))}
       <Button
         onClick={() => {
