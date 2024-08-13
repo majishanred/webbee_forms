@@ -25,9 +25,9 @@ const DateComponent = ({
             label={label}
             format="DD.MM.YYYY"
             value={formatDate(value)}
-            onChange={(e) => {
-              if (!e) return;
-              onChange(e.format('DD.MM.YYYY'));
+            onChange={(date) => {
+              if (!date) return;
+              onChange(date.format('DD.MM.YYYY'));
             }}
             required={required}
             disabled={disabled}
