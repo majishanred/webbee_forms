@@ -6,9 +6,3 @@ export type ContactsInfo = {
   email?: string;
   luboiDvij?: boolean;
 };
-
-export type ContactsType = {
-  contactsInfo: ContactsInfo;
-  hasError: boolean;
-  changing: boolean;
-};
