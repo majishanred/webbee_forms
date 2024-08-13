@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { projectSchema } from './ProjectSchema.ts';
 import IMask from 'imask';
 
-export const bigSchema = z.object({
+export const formSchema = z.object({
   contacts: z.object({
     firstName: z.string().min(1, 'Обязательное поле'),
     lastName: z.string().min(1, 'Обязательное поле'),

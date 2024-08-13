@@ -1,7 +1,7 @@
 import { Box, Button, Stack, styled, Tab, TabProps, Tabs, TabsProps } from '@mui/material';
 import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { bigSchema } from '../../schemas/BigSchema.ts';
+import { formSchema } from '../../schemas/FormSchema.ts';
 import { IsFormActiveProvider } from './IsFormActive.context.tsx';
 import { useState } from 'react';
 import { Forms, TabType } from './Card.types.ts';
@@ -19,7 +19,7 @@ const Card = () => {
       },
       projects: [],
     },
-    resolver: zodResolver(bigSchema),
+    resolver: zodResolver(formSchema),
   });
 
   const [isFormActive, setIsFormActive] = useState<boolean>(true);
