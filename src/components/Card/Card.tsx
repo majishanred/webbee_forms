@@ -73,7 +73,7 @@ const StyledTab = styled(Tab)<TabProps & { hasErrors?: boolean }>`
 
 const StyledTabs = styled(Tabs)<TabsProps & { hasErrors?: boolean }>`
   & .MuiTabs-indicator {
-    ${({ hasErrors, theme }) => hasErrors && 'background-color: ' + theme.palette.error.main};
+    background-color: ${({ hasErrors, theme }) => (hasErrors ? theme.palette.error.main : undefined)};
   }
 `;
 
