@@ -1,12 +1,10 @@
-import { createContext, Dispatch, PropsWithChildren, SetStateAction, useContext } from 'react';
+import { Context, createContext, Dispatch, SetStateAction, useContext } from 'react';
+import { IsFormActiveProviderProps } from './Card.types.ts';
 
 const IsFormActiveContext = createContext<boolean | null>(null);
 const SetIsFormActiveContext = createContext<Dispatch<SetStateAction<boolean>> | null>(null);
-export const IsFormActiveProvider = ({
-  isActive,
-  setIsActive,
-  children,
-}: { isActive: boolean; setIsActive: Dispatch<SetStateAction<boolean>> } & PropsWithChildren) => {
+
+export const IsFormActiveProvider = ({ isActive, setIsActive, children }: IsFormActiveProviderProps) => {
   return (
     <IsFormActiveContext.Provider value={isActive}>
       <SetIsFormActiveContext.Provider value={setIsActive}>{children}</SetIsFormActiveContext.Provider>
@@ -14,18 +12,18 @@ export const IsFormActiveProvider = ({
   );
 };
 
+const useContextHasContent = <T,>(context: Context<T>): NonNullable<T> => {
+  const content = useContext(context);
+
+  if (!content) throw new Error('Context does not provide any content');
+
+  return content;
+};
+
 export const useIsFormActive = () => {
-  const ctx = useContext(IsFormActiveContext);
-
-  if (ctx === null) throw new Error('Сontext is not provided');
-
-  return ctx;
+  return useContextHasContent(IsFormActiveContext);
 };
 
 export const useSetIsFormActive = () => {
-  const func = useContext(SetIsFormActiveContext);
-
-  if (!func) throw new Error('No context provided');
-
-  return func;
+  return useContextHasContent(SetIsFormActiveContext);
 };
