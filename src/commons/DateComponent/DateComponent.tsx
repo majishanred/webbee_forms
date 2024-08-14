@@ -2,18 +2,9 @@ import { FormControl, FormHelperText } from '@mui/material';
 import { DateField } from '@mui/x-date-pickers';
 import { formatDate } from '../../utils/formatDate.ts';
 import { Controller, useFormContext } from 'react-hook-form';
+import { DateComponentProps } from './DateComponent.types.ts';
 
-const DateComponent = ({
-  name,
-  label,
-  disabled,
-  required,
-}: {
-  name: string;
-  disabled: boolean;
-  label: string;
-  required?: boolean;
-}) => {
+const DateComponent = ({ name, label, disabled, required }: DateComponentProps) => {
   const { control } = useFormContext();
   return (
     <Controller

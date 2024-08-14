@@ -2,16 +2,18 @@ import StyledForm from '../../styled/StyledForm.ts';
 import { Box, Button, Stack } from '@mui/material';
 import { StyledFormTitle } from '../../styled/StyledFormTitle.ts';
 import { Delete } from '@mui/icons-material';
-import TextFieldWrapper from '../TextFieldWrapper/TextFieldWrapper.tsx';
+import TextFieldWrapper from '../../commons/TextFieldWrapper/TextFieldWrapper.tsx';
 import { useFieldArray, useFormContext, useWatch } from 'react-hook-form';
-import SkillsComponent from './SkillsComponent.tsx';
 import { useIsFormActive, useSetIsFormActive } from '../Card/IsFormActive.context.tsx';
 import { Forms } from '../Card/Card.types.ts';
-import DateComponent from './DateComponent.tsx';
-import RolesComponent from './RolesComponent.tsx';
+import DateComponent from '../../commons/DateComponent/DateComponent.tsx';
 import { useCallback, useMemo } from 'react';
+import { roles, skills } from './ProjectForm.constants.ts';
+import { ProjectFormProps } from './ProjectForm.types.ts';
+import SelectWrapper from '../../commons/Select/Select.tsx';
+import AutocompleteWrapper from '../../commons/Autocomplete/Autocomplete.tsx';
 
-export const ProjectForm = ({ projectIndex }: { projectIndex: number }) => {
+export const ProjectForm = ({ projectIndex }: ProjectFormProps) => {
   const { trigger, setValue, getValues } = useFormContext<Forms>();
 
   const { update, remove } = useFieldArray<Forms>({
@@ -24,7 +26,9 @@ export const ProjectForm = ({ projectIndex }: { projectIndex: number }) => {
 
   const isFormActive = useIsFormActive();
   const setFormIsActive = useSetIsFormActive();
-  const isValidated = useMemo(() => !isFormActive || projectData.isValidated, [projectData, isFormActive]);
+  const isValidated = useMemo(() => {
+    return !isFormActive || projectData.isValidated;
+  }, [projectData, isFormActive]);
 
   const deleteProject = () => {
     const projects = getValues().projects.filter((project) => project.projectId !== projectData.projectId);
@@ -42,19 +46,13 @@ export const ProjectForm = ({ projectIndex }: { projectIndex: number }) => {
     update(projectIndex, { ...projectData, isValidated: false });
     setFormIsActive(true);
   }, [update, projectIndex, projectData, setFormIsActive]);
+
   return (
     <StyledForm noValidate>
       <Stack gap={2}>
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <StyledFormTitle paddingTop="8px">Проект №{projectIndex + 1}</StyledFormTitle>
-          {!isValidated && (
-            <Delete
-              onClick={() => {
-                deleteProject();
-              }}
-              tabIndex={0}
-            />
-          )}
+          {!isValidated && <Delete onClick={deleteProject} tabIndex={0} />}
         </Box>
         <TextFieldWrapper
           name={`projects[${projectIndex}].name`}
@@ -62,20 +60,21 @@ export const ProjectForm = ({ projectIndex }: { projectIndex: number }) => {
           required={true}
           disabled={isValidated}
         />
-        <SkillsComponent name={`projects[${projectIndex}].skills`} disabled={isValidated} />
-        <RolesComponent name={`projects[${projectIndex}].role`} disabled={isValidated} />
+        <AutocompleteWrapper
+          name={`projects[${projectIndex}].skills`}
+          label="Навыки"
+          disabled={isValidated}
+          valueOptions={skills}
+        />
+        <SelectWrapper name={`projects[${projectIndex}].role`} options={roles} label="Роль" disabled={isValidated} />
         <Box display="flex" gap={1}>
           <DateComponent
             name={`projects[${projectIndex}].beginDate`}
-            label={'Начало работы'}
+            label="Начало работы"
             required={true}
             disabled={isValidated}
           />
-          <DateComponent
-            name={`projects[${projectIndex}].endDate`}
-            label={'Завершение работы'}
-            disabled={isValidated}
-          />
+          <DateComponent name={`projects[${projectIndex}].endDate`} label="Завершение работы" disabled={isValidated} />
         </Box>
       </Stack>
       <Stack marginTop={2}>
