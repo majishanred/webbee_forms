@@ -15,7 +15,7 @@ export const IsFormActiveProvider = ({ isActive, setIsActive, children }: IsForm
 const useContextHasContent = <T,>(context: Context<T>): NonNullable<T> => {
   const content = useContext(context);
 
-  if (!content) throw new Error('Context does not provide any content');
+  if (content === null || content === undefined) throw new Error('Context does not provide any content');
 
   return content;
 };
