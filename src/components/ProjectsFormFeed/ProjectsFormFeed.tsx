@@ -22,7 +22,7 @@ const ProjectsFormFeed = () => {
         isValidated: false,
       },
     ]);
-  }, [fields, append]);
+  }, [append]);
 
   const setIsFormActive = useSetIsFormActive();
 
