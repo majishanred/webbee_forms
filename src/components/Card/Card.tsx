@@ -3,7 +3,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { formSchema } from '../../schemas/FormSchema.ts';
 import { IsFormActiveProvider } from './IsFormActive.context.tsx';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Forms, TabType } from './Card.types.ts';
 import { tabs } from './Card.constants.tsx';
 import { isObjectEmpty } from '../../utils/isObjectEmpty.ts';
@@ -25,6 +25,15 @@ const Card = () => {
   const [isFormActive, setIsFormActive] = useState<boolean>(true);
   const [tab, setTab] = useState<TabType>(tabs[0]);
 
+  const handleOnClick = useCallback(
+    (isFormActive: boolean) => {
+      if (isFormActive) return methods.handleSubmit(() => setIsFormActive(false));
+      return () => setIsFormActive(true);
+    },
+    //@Note: вот это в игнор закидывать? А то линтер ругается
+    [methods.handleSubmit],
+  )(isFormActive);
+
   return (
     <FormProvider {...methods}>
       <StyledContainer>
@@ -41,21 +50,7 @@ const Card = () => {
           <StyledSection>{tab.component}</StyledSection>
         </IsFormActiveProvider>
         <StyledSection justifyContent="flex-end">
-          <Button
-            variant="contained"
-            onClick={
-              isFormActive
-                ? methods.handleSubmit(
-                    () => {
-                      setIsFormActive(false);
-                    },
-                    () => {},
-                  )
-                : () => {
-                    setIsFormActive(true);
-                  }
-            }
-          >
+          <Button variant="contained" onClick={handleOnClick}>
             {isFormActive ? 'Сохранить' : 'Редактировать'}
           </Button>
         </StyledSection>
