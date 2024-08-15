@@ -7,7 +7,7 @@ import PhoneNumberField from './PhoneNumberField.tsx';
 import LuboiDvijField from './LuboiDvijField.tsx';
 
 const ContactsForm = () => {
-  const isFormActive = useIsFormActive();
+  const isDisabled = !useIsFormActive();
 
   return (
     <StyledForm noValidate>
@@ -16,9 +16,9 @@ const ContactsForm = () => {
           <StyledFormTitle>Общая информация</StyledFormTitle>
         </Box>
         <Box display="flex" gap={1}>
-          <TextFieldWrapper name="contacts.lastName" label="Фамилия" required={true} disabled={!isFormActive} />
-          <TextFieldWrapper name="contacts.firstName" label="Имя" required={true} disabled={!isFormActive} />
-          <TextFieldWrapper name="contacts.middleName" label="Отчество" disabled={!isFormActive} />
+          <TextFieldWrapper name="contacts.lastName" label="Фамилия" required={true} disabled={isDisabled} />
+          <TextFieldWrapper name="contacts.firstName" label="Имя" required={true} disabled={isDisabled} />
+          <TextFieldWrapper name="contacts.middleName" label="Отчество" disabled={isDisabled} />
         </Box>
       </Stack>
       <Stack gap={2} marginTop={2}>
@@ -31,7 +31,7 @@ const ContactsForm = () => {
         </Box>
         <Stack gap={2}>
           <Typography>Другое</Typography>
-          <LuboiDvijField disabled={!isFormActive} />
+          <CheckboxWrapper name={'contacts.luboiDvij'} label="За любой движ" disabled={isDisabled} />
         </Stack>
       </Stack>
     </StyledForm>

@@ -24,11 +24,11 @@ export const ProjectForm = ({ projectIndex }: ProjectFormProps) => {
     name: `projects[${projectIndex}]`,
   });
 
-  const isFormActive = useIsFormActive();
+  const isDisabled = !useIsFormActive();
   const setFormIsActive = useSetIsFormActive();
   const isValidated = useMemo(() => {
-    return !isFormActive || projectData.isValidated;
-  }, [projectData, isFormActive]);
+    return isDisabled || projectData.isValidated;
+  }, [projectData, isDisabled]);
 
   const deleteProject = () => {
     const projects = getValues().projects.filter((project) => project.projectId !== projectData.projectId);
