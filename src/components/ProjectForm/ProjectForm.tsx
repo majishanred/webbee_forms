@@ -10,8 +10,8 @@ import DateComponent from '../../commons/DateComponent/DateComponent.tsx';
 import { useCallback, useMemo } from 'react';
 import { roles, skills } from './ProjectForm.constants.ts';
 import { ProjectFormProps } from './ProjectForm.types.ts';
-import SelectWrapper from '../../commons/Select/Select.tsx';
-import AutocompleteWrapper from '../../commons/Autocomplete/Autocomplete.tsx';
+import SelectWrapper from '../../commons/SelectWrapper/SelectWrapper.tsx';
+import AutocompleteWrapper from '../../commons/AutocompleteWrapper/AutocompleteWrapper.tsx';
 
 export const ProjectForm = ({ projectIndex }: ProjectFormProps) => {
   const { trigger, setValue, getValues } = useFormContext<Forms>();
@@ -70,7 +70,12 @@ export const ProjectForm = ({ projectIndex }: ProjectFormProps) => {
           disabled={isValidated}
           valueOptions={skills}
         />
-        <SelectWrapper name={`projects[${projectIndex}].role`} options={roles} label="Роль" disabled={isValidated} />
+        <SelectWrapper
+          name={`projects[${projectIndex}].role`}
+          valueOptions={roles}
+          label="Роль"
+          disabled={isValidated}
+        />
         <Box display="flex" gap={1}>
           <DateComponent
             name={`projects[${projectIndex}].beginDate`}
