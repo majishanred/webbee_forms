@@ -14,10 +14,7 @@ const AutocompleteWrapper = ({ name, label, disabled, valueOptions }: Autocomple
             id="combo-box-demo"
             options={valueOptions}
             value={value}
-            onChange={(_event, value) => {
-              console.log(value);
-              onChange(value);
-            }}
+            onChange={(_event, value) => onChange(value)}
             disabled={disabled}
             renderInput={(params) => <TextField {...params} label={label} />}
           />

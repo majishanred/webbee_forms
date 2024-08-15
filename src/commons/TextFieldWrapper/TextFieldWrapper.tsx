@@ -2,7 +2,15 @@ import { Controller } from 'react-hook-form';
 import { FormControl, FormHelperText, TextField } from '@mui/material';
 import { FormFieldWrapperProps } from './FormFieldWrapper.type.ts';
 
-const TextFieldWrapper = ({ name, label, required, disabled, formControlProps }: FormFieldWrapperProps) => {
+const TextFieldWrapper = ({
+  name,
+  label,
+  required,
+  disabled,
+  formControlProps,
+  textFieldProps,
+  helperTextProps,
+}: FormFieldWrapperProps) => {
   return (
     <Controller
       name={name}
@@ -18,8 +26,11 @@ const TextFieldWrapper = ({ name, label, required, disabled, formControlProps }:
             ref={ref}
             required={required}
             error={!!error}
+            {...textFieldProps}
           />
-          <FormHelperText>{error && error.message}</FormHelperText>
+          <FormHelperText error={!!error} {...helperTextProps}>
+            {error && error.message}
+          </FormHelperText>
         </FormControl>
       )}
     />

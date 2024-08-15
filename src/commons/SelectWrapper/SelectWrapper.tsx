@@ -2,7 +2,7 @@ import { Controller } from 'react-hook-form';
 import { FormControl, FormHelperText, InputLabel, MenuItem, Select, Typography } from '@mui/material';
 import { SelectWrapperProps } from './SelectWrapper.types.ts';
 
-const SelectWrapper = ({ name, label, disabled, required, options }: SelectWrapperProps) => {
+const SelectWrapper = ({ name, label, disabled, required, valueOptions }: SelectWrapperProps) => {
   return (
     <Controller
       name={name}
@@ -19,7 +19,7 @@ const SelectWrapper = ({ name, label, disabled, required, options }: SelectWrapp
             error={!!error}
             required={required}
           >
-            {options.map((element, index) => (
+            {valueOptions.map((element, index) => (
               <MenuItem key={index} value={element}>
                 <Typography>{element}</Typography>
               </MenuItem>

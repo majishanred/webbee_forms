@@ -1,12 +1,14 @@
-import { FormControlProps, TextFieldProps } from '@mui/material';
+import { BaseTextFieldProps, FormControlProps, FormHelperTextProps, TextField, TextFieldProps } from '@mui/material';
 
-//@Note: эта штука должна типизироваться вообще не так, но я пока не разобрался как это сделать нормально.
-export type FormFieldWrapperProps = {
+//@Note: вот это уже лучше, но я б хотел попытаться сделать чтоб эта штука понимала какой контрол в нее прилетает и давала подсказку для name. Но эт чет сложно
+export interface FormFieldWrapperProps
+  extends Exclude<BaseTextFieldProps, 'name' | 'label' | 'required' | 'disabled' | 'value' | 'onChange'> {
   name: string;
   label: string;
   required?: boolean;
   disabled?: boolean;
   formControlProps?: FormControlProps;
-  textFieldProps?: TextFieldProps;
-  helperTextProps?: TextFieldProps;
-};
+  textFieldProps?: Exclude<TextFieldProps, 'value' | 'onChange'>;
+  helperTextProps?: FormHelperTextProps;
+  textFieldSlot?: typeof TextField;
+}

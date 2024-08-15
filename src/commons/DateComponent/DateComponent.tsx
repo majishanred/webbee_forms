@@ -1,15 +1,13 @@
 import { FormControl, FormHelperText } from '@mui/material';
 import { DateField } from '@mui/x-date-pickers';
 import { formatDate } from '../../utils/formatDate.ts';
-import { Controller, useFormContext } from 'react-hook-form';
+import { Controller } from 'react-hook-form';
 import { DateComponentProps } from './DateComponent.types.ts';
 
 const DateComponent = ({ name, label, disabled, required }: DateComponentProps) => {
-  const { control } = useFormContext();
   return (
     <Controller
       name={name}
-      control={control}
       render={({ field: { value, onChange }, fieldState: { error } }) => (
         <FormControl fullWidth>
           <DateField
