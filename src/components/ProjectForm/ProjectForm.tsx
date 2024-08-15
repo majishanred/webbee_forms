@@ -47,6 +47,10 @@ export const ProjectForm = ({ projectIndex }: ProjectFormProps) => {
     setFormIsActive(true);
   }, [update, projectIndex, projectData, setFormIsActive]);
 
+  const handleButtonClick = useCallback(() => {
+    return isValidated ? revalidate() : validate();
+  }, [revalidate, validate, isValidated]);
+
   return (
     <StyledForm noValidate>
       <Stack gap={2}>
@@ -79,12 +83,7 @@ export const ProjectForm = ({ projectIndex }: ProjectFormProps) => {
       </Stack>
       <Stack marginTop={2}>
         <Stack marginLeft="auto">
-          <Button
-            variant="contained"
-            onClick={() => {
-              isValidated ? revalidate() : validate();
-            }}
-          >
+          <Button variant="contained" onClick={handleButtonClick}>
             {isValidated ? 'Редактировать' : 'Сохранить'}
           </Button>
         </Stack>
