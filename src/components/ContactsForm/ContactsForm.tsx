@@ -3,8 +3,8 @@ import { Box, Stack, Typography } from '@mui/material';
 import { StyledFormTitle } from '../../styled/StyledFormTitle.ts';
 import TextFieldWrapper from '../../commons/TextFieldWrapper/TextFieldWrapper.tsx';
 import { useIsFormActive } from '../Card/IsFormActive.context.tsx';
+import CheckboxWrapper from '../../commons/CheckboxWrapper/CheckboxWrapper.tsx';
 import PhoneNumberField from './PhoneNumberField.tsx';
-import LuboiDvijField from './LuboiDvijField.tsx';
 
 const ContactsForm = () => {
   const isDisabled = !useIsFormActive();
@@ -26,8 +26,13 @@ const ContactsForm = () => {
           <StyledFormTitle>Контакты</StyledFormTitle>
         </Box>
         <Box display="flex" gap={1}>
-          <PhoneNumberField disabled={!isFormActive} />
-          <TextFieldWrapper name="contacts.email" label="Email" disabled={!isFormActive} />
+          <PhoneNumberField
+            disabled={isDisabled}
+            name="contacts.phoneNumber"
+            label="Телефон"
+            mask="+{7}(000)000-00-00"
+          />
+          <TextFieldWrapper name="contacts.email" label="Email" disabled={isDisabled} />
         </Box>
         <Stack gap={2}>
           <Typography>Другое</Typography>
