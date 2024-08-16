@@ -69,12 +69,14 @@ export const ProjectForm = ({ projectIndex }: ProjectFormProps) => {
           label="Навыки"
           disabled={isValidated}
           valueOptions={skills}
+          required={true}
         />
         <SelectWrapper
           name={`projects[${projectIndex}].role`}
           valueOptions={roles}
           label="Роль"
           disabled={isValidated}
+          required={true}
         />
         <Box display="flex" gap={1}>
           <DateComponent

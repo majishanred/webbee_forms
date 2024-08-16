@@ -1,29 +1,31 @@
 import { FormControl, FormHelperText } from '@mui/material';
-import { DateField } from '@mui/x-date-pickers';
-import { formatDate } from '../../utils/formatDate.ts';
+import { DatePicker } from '@mui/x-date-pickers';
 import { Controller } from 'react-hook-form';
 import { DateComponentProps } from './DateComponent.types.ts';
+import { formatDate } from '../../utils/formatDate.ts';
 
-const DateComponent = ({ name, label, disabled, required }: DateComponentProps) => {
+const DateComponent = ({ name, label, disabled, required, format = 'DD.MM.YYYY' }: DateComponentProps) => {
   return (
     <Controller
       name={name}
       render={({ field: { value, onChange }, fieldState: { error } }) => (
         <FormControl fullWidth>
-          <DateField
+          <DatePicker
             label={label}
-            format="DD.MM.YYYY"
+            format={format}
             value={formatDate(value)}
-            onChange={(date) => {
-              if (!date) return;
-              onChange(date.format('DD.MM.YYYY'));
+            onChange={(value) => {
+              if (!value) {
+                onChange(null);
+                return;
+              }
+              onChange(value.toDate());
             }}
-            required={required}
             disabled={disabled}
-            clearable
             slotProps={{
               textField: {
                 error: !!error,
+                required: required,
               },
             }}
           />

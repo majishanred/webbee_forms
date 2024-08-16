@@ -3,7 +3,7 @@ import { Autocomplete, FormControl, FormHelperText, TextField } from '@mui/mater
 import { AutocompleteWrapperType } from './AutocompleteWrapper.types.ts';
 import { useId } from 'react';
 
-const AutocompleteWrapper = ({ name, label, disabled, valueOptions }: AutocompleteWrapperType) => {
+const AutocompleteWrapper = ({ name, label, disabled, required, valueOptions }: AutocompleteWrapperType) => {
   const uniqueId = useId();
   return (
     <Controller
@@ -18,7 +18,8 @@ const AutocompleteWrapper = ({ name, label, disabled, valueOptions }: Autocomple
             value={value}
             onChange={(_event, value) => onChange(value)}
             disabled={disabled}
-            renderInput={(params) => <TextField {...params} label={label} />}
+            ListboxProps={{}}
+            renderInput={(params) => <TextField {...params} error={!!error} label={label} required={required} />}
           />
           <FormHelperText error>{error && error.message}</FormHelperText>
         </FormControl>

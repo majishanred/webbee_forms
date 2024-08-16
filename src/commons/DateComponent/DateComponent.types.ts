@@ -3,4 +3,5 @@ export type DateComponentProps = {
   disabled: boolean;
   label: string;
   required?: boolean;
+  format?: string;
 };
