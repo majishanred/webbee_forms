@@ -30,11 +30,11 @@ export const ProjectForm = ({ projectIndex }: ProjectFormProps) => {
     return isDisabled || projectData.isValidated;
   }, [projectData, isDisabled]);
 
-  const deleteProject = () => {
+  const deleteProject = useCallback(() => {
     const projects = getValues().projects.filter((project) => project.projectId !== projectData.projectId);
     remove(projectIndex);
     setValue('projects', projects);
-  };
+  }, [getValues, projectData.projectId, projectIndex, remove, setValue]);
 
   const validate = useCallback(async () => {
     //@Note: хз как это типизировать
