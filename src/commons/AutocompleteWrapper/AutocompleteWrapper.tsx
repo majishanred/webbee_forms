@@ -1,8 +1,10 @@
 import { Controller } from 'react-hook-form';
 import { Autocomplete, FormControl, FormHelperText, TextField } from '@mui/material';
 import { AutocompleteWrapperType } from './AutocompleteWrapper.types.ts';
+import { useId } from 'react';
 
 const AutocompleteWrapper = ({ name, label, disabled, valueOptions }: AutocompleteWrapperType) => {
+  const uniqueId = useId();
   return (
     <Controller
       name={name}
@@ -11,7 +13,7 @@ const AutocompleteWrapper = ({ name, label, disabled, valueOptions }: Autocomple
           <Autocomplete
             multiple
             disablePortal
-            id="combo-box-demo"
+            id={uniqueId}
             options={valueOptions}
             value={value}
             onChange={(_event, value) => onChange(value)}
