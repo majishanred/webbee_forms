@@ -2,6 +2,11 @@ import { z } from 'zod';
 import { projectSchema } from './ProjectSchema.ts';
 import IMask from 'imask';
 
+//@Note: чет ничего лучше не придумал
+const mask = IMask.createMask({
+  mask: '+{7}(000)000-00-00',
+});
+
 export const formSchema = z.object({
   contacts: z.object({
     firstName: z.string().min(1, 'Обязательное поле'),
@@ -9,9 +14,6 @@ export const formSchema = z.object({
     middleName: z.optional(z.string().min(1, 'Не бывает такого короткого отчества')),
     email: z.optional(z.string().email('Некоректное мыло')),
     phoneNumber: z.string().refine((phoneNumber) => {
-      const mask = IMask.createMask({
-        mask: '+{7}(000)000-00-00',
-      });
       mask.resolve(phoneNumber);
       return mask.isComplete;
     }, 'Неверный номер телефона'),
