@@ -4,6 +4,5 @@ export interface MaskedTextFieldProps extends InputBaseProps {
   mask: string;
   value: string;
   label: string;
-  //@Note: типизироать onChange из mui эт кошмар
-  onAccept: any;
+  onAccept: (...event: any[]) => void;
 }
