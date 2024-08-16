@@ -1,21 +1,16 @@
 import { z } from 'zod';
-import dayjs from 'dayjs';
 export const projectSchema = z
   .object({
     name: z.string().trim().min(1, 'Обязательное поле'),
     skills: z.string().array().nonempty('Укажи хотя бы один навык плз'),
     role: z.string().min(1, 'Обязательное поле'),
-    beginDate: z
-      .string({
-        message: 'Дату когда стартуем введи',
-      })
-      .regex(/\d{2}.\d{2}.\d{4}/, 'Некоректная дата')
-      .length(10, 'Некоректная дата'),
+    beginDate: z.date({
+      message: 'Дату когда стартуем введи',
+    }),
     endDate: z.optional(
-      z
-        .string()
-        .regex(/\d{2}.\d{2}.\d{4}/)
-        .length(10, 'Некоректная дата'),
+      z.date({
+        message: 'Начал вводить - вводи до конца',
+      }),
     ),
   })
   .superRefine((arg, ctx) => {
@@ -24,10 +19,7 @@ export const projectSchema = z
       return;
     }
 
-    const begin = dayjs(beginDate, 'DD.MM.YYYY').valueOf();
-    const end = dayjs(endDate, 'DD.MM.YYYY').valueOf();
-
-    if (end - begin < 0) {
+    if (endDate < beginDate) {
       ctx.addIssue({
         path: ['endDate'],
         code: z.ZodIssueCode.custom,
