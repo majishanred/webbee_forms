@@ -4,4 +4,6 @@ export type DateComponentProps = {
   label: string;
   required?: boolean;
   format?: string;
+  maxDate?: Date;
+  minDate?: Date;
 };

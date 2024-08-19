@@ -4,4 +4,5 @@ export type AutocompleteWrapperType = {
   disabled?: boolean;
   required?: boolean;
   valueOptions: string[] | { label: string }[];
+  limitTags?: number;
 };
