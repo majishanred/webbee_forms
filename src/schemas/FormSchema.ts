@@ -9,14 +9,29 @@ const mask = IMask.createMask({
 
 export const formSchema = z.object({
   contacts: z.object({
-    firstName: z.string().min(1, 'Обязательное поле'),
-    lastName: z.string().min(1, 'Обязательное поле'),
-    middleName: z.optional(z.string().min(1, 'Не бывает такого короткого отчества')),
-    email: z.optional(z.string().email('Некоректное мыло')),
-    phoneNumber: z.string().refine((phoneNumber) => {
-      mask.resolve(phoneNumber);
-      return mask.isComplete;
-    }, 'Неверный номер телефона'),
+    firstName: z
+      .string({
+        message: 'Обязательное поле',
+      })
+      .trim()
+      .min(2, 'Имя не может состоять из 1 символа'),
+    lastName: z
+      .string({
+        message: 'Обязательное поле',
+      })
+      .trim()
+      .min(2, 'Фамилия не может состоять из 1 символа'),
+    middleName: z.optional(z.string().trim().min(2, 'Не бывает такого короткого отчества')),
+    email: z.optional(z.string().trim().email('Некоректное мыло')),
+    phoneNumber: z
+      .string({
+        message: 'Обязательное поле',
+      })
+      .trim()
+      .refine((phoneNumber) => {
+        mask.resolve(phoneNumber);
+        return mask.isComplete;
+      }, 'Неверный номер телефона'),
     luboiDvij: z
       .boolean({
         message: 'Ты обязан быть за любой движ',

@@ -1,9 +1,20 @@
 import { z } from 'zod';
 export const projectSchema = z
   .object({
-    name: z.string().trim().min(1, 'Обязательное поле'),
-    skills: z.string().array().nonempty('Укажи хотя бы один навык плз'),
-    role: z.string().min(1, 'Обязательное поле'),
+    name: z
+      .string({
+        message: 'Обязательное поле',
+      })
+      .trim()
+      .min(1, 'Слишком короткое название прокта'),
+    skills: z
+      .array(z.string().trim(), {
+        message: 'Укажи хотя бы один навык плз',
+      })
+      .nonempty(),
+    role: z.string({
+      message: 'Обязательное поле',
+    }),
     beginDate: z.date({
       message: 'Дату когда стартуем введи',
     }),
@@ -27,5 +38,3 @@ export const projectSchema = z
       });
     }
   });
-
-export type ProjectFormFields = z.infer<typeof projectSchema>;

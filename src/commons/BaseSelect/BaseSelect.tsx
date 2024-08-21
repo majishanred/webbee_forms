@@ -1,8 +1,8 @@
 import { Controller } from 'react-hook-form';
 import { FormControl, FormHelperText, InputLabel, MenuItem, Select, Typography } from '@mui/material';
-import { SelectWrapperProps } from './SelectWrapper.types.ts';
+import { SelectWrapperProps } from './BaseSelect.types.ts';
 
-const SelectWrapper = ({ name, label, disabled, required, valueOptions }: SelectWrapperProps) => {
+const BaseSelect = ({ name, label, disabled, required, valueOptions, ...otherOptions }: SelectWrapperProps) => {
   return (
     <Controller
       name={name}
@@ -12,6 +12,7 @@ const SelectWrapper = ({ name, label, disabled, required, valueOptions }: Select
             {label}
           </InputLabel>
           <Select
+            {...otherOptions}
             label={label}
             value={value}
             onChange={onChange}
@@ -32,4 +33,4 @@ const SelectWrapper = ({ name, label, disabled, required, valueOptions }: Select
   );
 };
 
-export default SelectWrapper;
+export default BaseSelect;

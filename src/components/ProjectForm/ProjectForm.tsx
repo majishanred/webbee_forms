@@ -2,7 +2,7 @@ import StyledForm from '../../styled/StyledForm.ts';
 import { Box, Button, Stack } from '@mui/material';
 import { StyledFormTitle } from '../../styled/StyledFormTitle.ts';
 import { Delete } from '@mui/icons-material';
-import TextFieldWrapper from '../../commons/TextFieldWrapper/TextFieldWrapper.tsx';
+import BaseFormField from '../../commons/BaseFormField/BaseFormField.tsx';
 import { useFieldArray, useFormContext, useWatch } from 'react-hook-form';
 import { useIsFormActive, useSetIsFormActive } from '../Card/IsFormActive.context.tsx';
 import { Forms } from '../Card/Card.types.ts';
@@ -10,8 +10,8 @@ import DateComponent from '../../commons/DateComponent/DateComponent.tsx';
 import { useCallback, useMemo } from 'react';
 import { roles, skills } from './ProjectForm.constants.ts';
 import { ProjectFormProps } from './ProjectForm.types.ts';
-import SelectWrapper from '../../commons/SelectWrapper/SelectWrapper.tsx';
-import AutocompleteWrapper from '../../commons/AutocompleteWrapper/AutocompleteWrapper.tsx';
+import BaseSelect from '../../commons/BaseSelect/BaseSelect.tsx';
+import BaseAutocomplete from '../../commons/BaseAutocomplete/BaseAutocomplete.tsx';
 
 export const ProjectForm = ({ projectIndex }: ProjectFormProps) => {
   const { trigger, setValue, getValues } = useFormContext<Forms>();
@@ -21,7 +21,7 @@ export const ProjectForm = ({ projectIndex }: ProjectFormProps) => {
   });
 
   const projectData = useWatch({
-    name: `projects[${projectIndex}]`,
+    name: `projects.${projectIndex}`,
   });
 
   const isDisabled = !useIsFormActive();
@@ -37,8 +37,7 @@ export const ProjectForm = ({ projectIndex }: ProjectFormProps) => {
   }, [getValues, projectData.projectId, projectIndex, remove, setValue]);
 
   const validate = useCallback(async () => {
-    //@Note: хз как это типизировать
-    const result = await trigger(`projects[${projectIndex}]` as `projects.${number}`);
+    const result = await trigger(`projects.${projectIndex}`);
     if (result) update(projectIndex, { ...projectData, isValidated: true });
   }, [projectIndex, projectData, trigger, update]);
 
@@ -58,21 +57,21 @@ export const ProjectForm = ({ projectIndex }: ProjectFormProps) => {
           <StyledFormTitle paddingTop="8px">Проект №{projectIndex + 1}</StyledFormTitle>
           {!isValidated && <Delete onClick={deleteProject} tabIndex={0} />}
         </Box>
-        <TextFieldWrapper
-          name={`projects[${projectIndex}].name`}
+        <BaseFormField
+          name={`projects.${projectIndex}.name`}
           label={'Название проекта'}
           required={true}
           disabled={isValidated}
         />
-        <AutocompleteWrapper
-          name={`projects[${projectIndex}].skills`}
+        <BaseAutocomplete
+          name={`projects.${projectIndex}.skills`}
           label="Навыки"
           disabled={isValidated}
           valueOptions={skills}
           required={true}
         />
-        <SelectWrapper
-          name={`projects[${projectIndex}].role`}
+        <BaseSelect
+          name={`projects.${projectIndex}.role`}
           valueOptions={roles}
           label="Роль"
           disabled={isValidated}
@@ -80,12 +79,12 @@ export const ProjectForm = ({ projectIndex }: ProjectFormProps) => {
         />
         <Box display="flex" gap={1}>
           <DateComponent
-            name={`projects[${projectIndex}].beginDate`}
+            name={`projects.${projectIndex}.beginDate`}
             label="Начало работы"
             required={true}
             disabled={isValidated}
           />
-          <DateComponent name={`projects[${projectIndex}].endDate`} label="Завершение работы" disabled={isValidated} />
+          <DateComponent name={`projects.${projectIndex}.endDate`} label="Завершение работы" disabled={isValidated} />
         </Box>
       </Stack>
       <Stack marginTop={2}>

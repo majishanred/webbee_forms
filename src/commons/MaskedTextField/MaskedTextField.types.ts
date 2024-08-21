@@ -1,6 +1,6 @@
-import { InputBaseProps } from '@mui/material';
+import { TextFieldProps } from '@mui/material';
 
-export interface MaskedTextFieldProps extends InputBaseProps {
+export interface MaskedTextFieldProps extends TextFieldProps<'standard'> {
   mask: string;
   value: string;
   label: string;

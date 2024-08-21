@@ -11,15 +11,11 @@ import { isObjectEmpty } from '../../utils/isObjectEmpty.ts';
 const Card = () => {
   const methods = useForm<Forms>({
     defaultValues: {
-      contacts: {
-        firstName: '',
-        lastName: '',
-        phoneNumber: '',
-        luboiDvij: true,
-      },
+      contacts: {},
       projects: [],
     },
     resolver: zodResolver(formSchema),
+    mode: 'onTouched',
   });
 
   const [isFormActive, setIsFormActive] = useState<boolean>(true);
@@ -60,8 +56,9 @@ const Card = () => {
 };
 
 const StyledTab = styled(Tab)<TabProps & { hasErrors?: boolean }>`
-  border-bottom: ${({ hasErrors }) => (hasErrors ? '2px' : '0')};
-  & .MuiButtonBase-root .MuiTab-root {
+  color: ${({ hasErrors, theme }) => (hasErrors ? theme.palette.error.main : theme.palette.primary.main)};
+
+  &.Mui-selected {
     color: ${({ hasErrors, theme }) => (hasErrors ? theme.palette.error.main : theme.palette.primary.main)};
   }
 `;

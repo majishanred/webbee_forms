@@ -3,7 +3,6 @@ import { DatePicker } from '@mui/x-date-pickers';
 import { Controller } from 'react-hook-form';
 import { DateComponentProps } from './DateComponent.types.ts';
 import { formatDate } from '../../utils/formatDate.ts';
-import dayjs from 'dayjs';
 
 const DateComponent = ({
   name,
@@ -13,6 +12,7 @@ const DateComponent = ({
   format = 'DD.MM.YYYY',
   maxDate,
   minDate,
+  ...otherProps
 }: DateComponentProps) => {
   return (
     <Controller
@@ -20,6 +20,7 @@ const DateComponent = ({
       render={({ field: { value, onChange }, fieldState: { error } }) => (
         <FormControl fullWidth>
           <DatePicker
+            {...otherProps}
             label={label}
             format={format}
             value={formatDate(value)}
@@ -37,8 +38,8 @@ const DateComponent = ({
                 required: required,
               },
             }}
-            maxDate={dayjs(maxDate)}
-            minDate={dayjs(minDate)}
+            maxDate={maxDate}
+            minDate={minDate}
           />
           <FormHelperText error>{error && error.message}</FormHelperText>
         </FormControl>

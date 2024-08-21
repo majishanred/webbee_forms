@@ -1,9 +1,17 @@
 import { Controller } from 'react-hook-form';
 import { Autocomplete, FormControl, FormHelperText, TextField } from '@mui/material';
-import { AutocompleteWrapperType } from './AutocompleteWrapper.types.ts';
+import { BaseAutocompleteProps } from './BaseAutocomplete.types.ts';
 import { useId } from 'react';
 
-const AutocompleteWrapper = ({ name, label, disabled, required, valueOptions, limitTags }: AutocompleteWrapperType) => {
+const BaseAutocomplete = <T,>({
+  name,
+  label,
+  disabled,
+  required,
+  limitTags,
+  valueOptions,
+  ...otherProps
+}: BaseAutocompleteProps<T>) => {
   const uniqueId = useId();
   return (
     <Controller
@@ -11,6 +19,7 @@ const AutocompleteWrapper = ({ name, label, disabled, required, valueOptions, li
       render={({ field: { value, onChange }, fieldState: { error } }) => (
         <FormControl>
           <Autocomplete
+            {...otherProps}
             limitTags={limitTags}
             multiple
             disablePortal
@@ -29,4 +38,4 @@ const AutocompleteWrapper = ({ name, label, disabled, required, valueOptions, li
   );
 };
 
-export default AutocompleteWrapper;
+export default BaseAutocomplete;
